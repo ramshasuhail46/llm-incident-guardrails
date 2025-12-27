@@ -1,0 +1,8 @@
+{
+    "incident_id": "INC-2025-002",
+    "signals": {
+      "metrics": {"memory_usage": "98%", "restart_count": "5"},
+      "logs": ["FATAL: OutOfMemoryError in worker-process-7"],
+      "deployments": [{"service": "data-processor", "version": "v1.2.0"}]
+    }
+  }

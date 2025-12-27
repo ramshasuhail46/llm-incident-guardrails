@@ -31,32 +31,43 @@ class ReasoningEngine:
             return json.load(f)
 
     def generate_diagnosis(self, raw_data: dict) -> IncidentDiagnosis:
-        user_content = f"Analyze these signals: {json.dumps(raw_data)}"
+        try:
+            user_content = f"Analyze these signals: {json.dumps(raw_data)}"
 
-        # Call the LLM (LLM Reasoning Layer)
-        response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
-            response_format={ "type": "json_object" }, 
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_content}
-            ]
-        )
+            # Call the LLM (LLM Reasoning Layer)
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                response_format={ "type": "json_object" }, 
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_content}
+                ]
+            )
 
-        # Parse raw response
-        ai_output = json.loads(response.choices[0].message.content)
+            # Parse raw response
+            ai_output = json.loads(response.choices[0].message.content)
 
-        # Validation via Pydantic
-        diagnosis = IncidentDiagnosis(**ai_output)
+            # Validation via Pydantic
+            diagnosis = IncidentDiagnosis(**ai_output)
 
-        # Confidence & Abstention Logic
-        if diagnosis.hypotheses:
-            top_conf = max(h.confidence for h in diagnosis.hypotheses)
-            diagnosis.is_escalated = top_conf < self.threshold
-        else:
-            diagnosis.is_escalated = True # Escalate if no hypotheses are generated
+            # Confidence & Abstention Logic
+            if diagnosis.hypotheses:
+                top_conf = max(h.confidence for h in diagnosis.hypotheses)
+                diagnosis.is_escalated = top_conf < self.threshold
+            else:
+                diagnosis.is_escalated = True # Escalate if no hypotheses are generated
 
-        return diagnosis
+            return diagnosis
+
+        except Exception as e:
+            # If AI fails, MUST escalate to a human
+            print(f"Logic failure or API error: {e}")
+            return IncidentDiagnosis(
+                incident_id=raw_data.get("incident_id", "UNKNOWN"),
+                is_escalated=True,
+                hypotheses=[],
+                summary=f"SYSTEM FAILURE: AI Reasoning Engine encountered an error: {str(e)}"
+            )
 
 if __name__ == "__main__":
     engine = ReasoningEngine()
