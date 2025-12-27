@@ -1,0 +1,21 @@
+{
+    "incident_id": "INC-2025-001",
+    "signals": {
+      "metrics": {
+        "cpu_usage": "92%",
+        "p99_latency": "4500ms",
+        "error_rate": "15%"
+      },
+      "logs": [
+        "CRITICAL: Connection pool 'auth-db' exhausted",
+        "WARNING: Retry limit reached for service 'user-profile'"
+      ],
+      "deployments": [
+        {
+          "service": "auth-api",
+          "timestamp": "2025-12-27T10:00:00Z",
+          "version": "v2.4.1"
+        }
+      ]
+    }
+  }
