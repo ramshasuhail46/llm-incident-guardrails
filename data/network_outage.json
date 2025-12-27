@@ -1,0 +1,8 @@
+{
+    "incident_id": "INC-2025-003",
+    "signals": {
+      "metrics": {"packet_loss": "20%", "api_timeout_count": "450"},
+      "logs": ["ERROR: Failed to reach gateway 10.0.0.1", "Timeout connecting to AWS-RDS"],
+      "deployments": []
+    }
+  }
