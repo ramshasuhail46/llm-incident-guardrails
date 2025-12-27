@@ -1,14 +1,22 @@
 import json
+import os
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Add parent directory to path to allow imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+# Load environment variables from .env file
+env_path = Path(__file__).parent.parent / ".env"
+load_dotenv(env_path)
+
 from src.models import IncidentDiagnosis, Hypothesis
 
 class ReasoningEngine:
-    def __init__(self, confidence_threshold: float = 0.7):
+    def __init__(self, confidence_threshold: float = None):
+        if confidence_threshold is None:
+            confidence_threshold = float(os.getenv("CONFIDENCE_THRESHOLD", "0.7"))
         self.threshold = confidence_threshold
 
     def load_signals(self, filepath: str):
