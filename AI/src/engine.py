@@ -68,13 +68,3 @@ class ReasoningEngine:
                 hypotheses=[],
                 summary=f"SYSTEM FAILURE: AI Reasoning Engine encountered an error: {str(e)}"
             )
-
-if __name__ == "__main__":
-    engine = ReasoningEngine()
-    try:
-        data = engine.load_signals("data/mock_signals.json")
-        result = engine.generate_diagnosis(data)
-        print("--- INCIDENT DIAGNOSIS REPORT ---")
-        print(result.model_dump_json(indent=2))
-    except Exception as e:
-        print(f"Error during diagnosis: {e}")
