@@ -1,7 +1,5 @@
-'use client';
-
 import DashboardContent from '@/components/dashboard/DashboardContent';
 
-export default function DashboardPage() {
+export default function WorkspacePage() {
     return <DashboardContent />;
 }

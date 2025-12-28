@@ -2,21 +2,9 @@ import { Search, Bell, Settings, Plus } from 'lucide-react';
 
 export default function DashboardNavbar() {
     return (
-        <nav className="h-16 border-b border-gray-100 bg-white px-6 flex items-center justify-between sticky top-0 z-30">
-            <div className="flex items-center gap-8">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">I</span>
-                    </div>
-                    <span className="font-bold text-gray-900">IncidentFlow</span>
-                </div>
-
-                <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-500">
-                    <a href="#" className="text-primary border-b-2 border-primary py-5">Dashboard</a>
-                    <a href="#" className="hover:text-gray-900 py-5 transition-colors">Incidents</a>
-                    <a href="#" className="hover:text-gray-900 py-5 transition-colors">Analytics</a>
-                    <a href="#" className="hover:text-gray-900 py-5 transition-colors">Settings</a>
-                </div>
+        <nav className="h-16 border-b border-gray-100 bg-white/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-30">
+            <div className="flex items-center gap-4">
+                <h2 className="text-sm font-bold text-gray-900 md:hidden">IncidentFlow</h2>
             </div>
 
             <div className="flex items-center gap-4">

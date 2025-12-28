@@ -1,43 +1,152 @@
-export default function TrendsChart() {
-    const data = [
-        { height: '40%' }, { height: '60%' }, { height: '45%' }, { height: '80%' },
-        { height: '30%' }, { height: '50%' }, { height: '70%' }, { height: '40%' },
-        { height: '90%' }, { height: '55%' }, { height: '75%' }, { height: '65%' },
-        { height: '85%' }, { height: '40%' }
-    ];
+'use client';
+
+import { useState } from 'react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { Filter } from 'lucide-react';
+
+interface TrendsChartProps {
+    data: any[];
+    loading: boolean;
+}
+
+export default function TrendsChart({ data, loading }: TrendsChartProps) {
+    const [viewMode, setViewMode] = useState<'all' | 'severity'>('all');
+
+    if (loading) {
+        return (
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-[400px] flex items-center justify-center animate-pulse">
+                <div className="w-full h-full bg-gray-50/50 rounded-xl"></div>
+            </div>
+        );
+    }
+
+    const CustomTooltip = ({ active, payload, label }: any) => {
+        if (active && payload && payload.length) {
+            return (
+                <div className="bg-white p-4 border border-gray-100 shadow-xl rounded-xl">
+                    <p className="font-bold text-gray-900 mb-2">{new Date(label).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}</p>
+                    {payload.map((entry: any, index: number) => (
+                        <div key={index} className="flex items-center gap-2 text-sm">
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></div>
+                            <span className="text-gray-500 capitalize">{entry.name}:</span>
+                            <span className="font-mono font-bold text-gray-900">{entry.value}</span>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+        return null;
+    };
 
     return (
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm glass relative overflow-hidden group">
-            <div className="flex justify-between items-start mb-8">
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm glass hover:border-primary/10 transition-colors duration-300">
+            <div className="flex justify-between items-center mb-6">
                 <div>
                     <h3 className="text-lg font-bold text-gray-900">Incident Trends</h3>
-                    <p className="text-xs text-gray-500">Daily Incidents: Last 30 Days</p>
+                    <p className="text-xs text-gray-500">Last 30 Days</p>
                 </div>
-                <button className="text-gray-400 hover:text-gray-600">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                    </svg>
-                </button>
+                <div className="flex bg-gray-100 p-1 rounded-lg">
+                    <button
+                        onClick={() => setViewMode('all')}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${viewMode === 'all'
+                                ? 'bg-white text-gray-900 shadow-sm'
+                                : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        All Incidents
+                    </button>
+                    <button
+                        onClick={() => setViewMode('severity')}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${viewMode === 'severity'
+                                ? 'bg-white text-gray-900 shadow-sm'
+                                : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        By Severity
+                    </button>
+                </div>
             </div>
 
-            <div className="h-48 flex items-end gap-2 px-2">
-                {data.map((item, i) => (
-                    <div key={i} className="flex-1 group/bar relative">
-                        <div
-                            style={{ height: item.height }}
-                            className="w-full bg-primary/20 group-hover/bar:bg-primary transition-all duration-300 rounded-t-sm"
-                        ></div>
-                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20">
-                            {item.height === '90%' ? '12 Incidents' : '4 Incidents'}
-                        </div>
-                    </div>
-                ))}
-            </div>
+            <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <defs>
+                            <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.2} />
+                                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                            </linearGradient>
+                            <linearGradient id="colorCritical" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
+                                <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                            </linearGradient>
+                            <linearGradient id="colorWarning" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.2} />
+                                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                        <XAxis
+                            dataKey="date"
+                            tickFormatter={(value) => new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                            tick={{ fontSize: 10, fill: '#6B7280' }}
+                            axisLine={false}
+                            tickLine={false}
+                            dy={10}
+                        />
+                        <YAxis
+                            tick={{ fontSize: 10, fill: '#6B7280' }}
+                            axisLine={false}
+                            tickLine={false}
+                            allowDecimals={false}
+                        />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
 
-            {/* Grid lines */}
-            <div className="absolute inset-x-6 top-24 h-[1px] bg-gray-50 -z-10"></div>
-            <div className="absolute inset-x-6 top-36 h-[1px] bg-gray-50 -z-10"></div>
-            <div className="absolute inset-x-6 top-48 h-[1px] bg-gray-50 -z-10"></div>
+                        {viewMode === 'all' ? (
+                            <Area
+                                type="monotone"
+                                dataKey="count"
+                                name="Total Incidents"
+                                stroke="#8b5cf6"
+                                strokeWidth={2}
+                                fillOpacity={1}
+                                fill="url(#colorTotal)"
+                                activeDot={{ r: 6, strokeWidth: 0 }}
+                            />
+                        ) : (
+                            <>
+                                <Area
+                                    type="monotone"
+                                    dataKey="critical"
+                                    name="Critical"
+                                    stroke="#ef4444"
+                                    strokeWidth={2}
+                                    fillOpacity={1}
+                                    fill="url(#colorCritical)"
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="warning"
+                                    name="Warning"
+                                    stroke="#f59e0b"
+                                    strokeWidth={2}
+                                    fillOpacity={1}
+                                    fill="url(#colorWarning)"
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="info"
+                                    name="Info"
+                                    stroke="#3b82f6"
+                                    strokeWidth={2}
+                                    fillOpacity={0}
+                                    fill="transparent"
+                                />
+                            </>
+                        )}
+                    </AreaChart>
+                </ResponsiveContainer>
+            </div>
         </div>
     );
 }

@@ -1,0 +1,196 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
+import {
+    LayoutDashboard,
+    AlertCircle,
+    BarChart3,
+    Settings,
+    Shield,
+    Users,
+    History,
+    HelpCircle
+} from 'lucide-react';
+import ContextSwitcher from './ContextSwitcher';
+import ChangelogModal from './ChangelogModal';
+import HelpSidebar from './HelpSidebar';
+import { useWorkspace } from '@/hooks/useWorkspace';
+
+const navItems = [
+    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'SRE Guardrails', href: '/guardrails', icon: Shield },
+];
+
+const secondaryNavItems = [
+    { name: 'Team', href: '/team?tab=members', icon: Users },
+    { name: 'History', href: '/history', icon: History },
+    { name: 'Settings', href: '/settings?tab=audit', icon: Settings },
+];
+
+export default function Sidebar() {
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const { activeOrg, activeProject } = useWorkspace();
+    const [showChangelog, setShowChangelog] = useState(false);
+    const [showHelpSidebar, setShowHelpSidebar] = useState(false);
+
+    const currentPathWithSearch = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
+
+    const getHref = (href: string) => {
+        if (!activeOrg) return '#';
+
+        const [path, query] = href.split('?');
+        const search = query ? `?${query}` : '';
+
+        // Handle org-level settings/team (always org-scoped)
+        if (path === '/settings') {
+            return activeProject
+                ? `/org/${activeOrg.slug}/proj/${activeProject.id}/settings${search}`
+                : `/org/${activeOrg.slug}/settings${search}`;
+        }
+        if (path === '/team') return `/org/${activeOrg.slug}/settings${search}`;
+
+        // Handle history (context-aware)
+        if (path === '/history') {
+            return activeProject
+                ? `/org/${activeOrg.slug}/proj/${activeProject.id}/history${search}`
+                : `/org/${activeOrg.slug}/history${search}`;
+        }
+
+        // Handle dashboard (the main landing page)
+        if (path === '/dashboard') {
+            return activeProject
+                ? `/org/${activeOrg.slug}/proj/${activeProject.id}${search}`
+                : `/org/${activeOrg.slug}/dashboard${search}`;
+        }
+
+        // Handle guardrails
+        if (path === '/guardrails') {
+            return activeProject
+                ? `/org/${activeOrg.slug}/proj/${activeProject.id}/guardrails${search}`
+                : '#'; // Only available for projects
+        }
+
+        // Default: append to base
+        const base = activeProject
+            ? `/org/${activeOrg.slug}/proj/${activeProject.id}`
+            : `/org/${activeOrg.slug}`;
+
+        return `${base}${path}${search}`;
+    };
+
+    return (
+        <aside className="w-72 h-screen border-r border-gray-100 bg-white flex flex-col sticky top-0">
+            {/* Context Switcher Section */}
+            <div className="p-4 mb-4">
+                <ContextSwitcher />
+            </div>
+
+            {/* Main Navigation */}
+            <nav className="flex-1 px-4 space-y-1">
+                <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    Main Menu
+                </p>
+                {navItems.map((item) => {
+                    const href = getHref(item.href);
+                    const isActive = currentPathWithSearch === href || pathname === href;
+                    const isGuardrails = item.href === '/guardrails';
+                    const isDisabled = isGuardrails && !activeProject;
+
+                    return (
+                        <Link
+                            key={item.href}
+                            href={href}
+                            onClick={(e) => {
+                                if (isDisabled) {
+                                    e.preventDefault();
+                                    alert('Please select a project to configure SRE Guardrails.');
+                                }
+                            }}
+                            className={`
+                                flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                                ${isActive
+                                    ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}
+                                ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
+                            `}
+                        >
+                            <item.icon size={20} className={isActive ? 'text-white' : 'text-gray-400'} />
+                            {item.name}
+                        </Link>
+                    );
+                })}
+            </nav>
+
+            {/* Secondary Navigation */}
+            <nav className="px-4 py-6 border-t border-gray-50 space-y-1">
+                <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    System
+                </p>
+                {secondaryNavItems.map((item) => {
+                    const href = getHref(item.href);
+                    const isActive = currentPathWithSearch === href;
+                    return (
+                        <Link
+                            key={item.href}
+                            href={href}
+                            className={`
+                                flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                                ${isActive
+                                    ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}
+                            `}
+                        >
+                            <item.icon size={20} className={isActive ? 'text-white' : 'text-gray-400'} />
+                            {item.name}
+                        </Link>
+                    );
+                })}
+
+                {/* Help Button */}
+                <button
+                    onClick={() => setShowHelpSidebar(true)}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                >
+                    <HelpCircle size={20} className="text-gray-400" />
+                    Help
+                </button>
+            </nav>
+
+            {/* Footer / User Profile */}
+            <div className="p-4 border-t border-gray-50 space-y-3">
+                <div className="flex items-center gap-3 p-2 rounded-xl bg-gray-50/50 border border-transparent hover:border-gray-100 transition-all cursor-pointer group">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 overflow-hidden">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-gray-900 truncate">Felix Miller</p>
+                        <p className="text-xs text-gray-500 truncate">SRE Lead</p>
+                    </div>
+                    <div className="w-2 h-2 rounded-full bg-green-500 border-2 border-white shadow-sm"></div>
+                </div>
+
+                {/* Version & Changelog */}
+                <div className="px-2 py-2 flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        Version 1.0.0
+                    </span>
+                    <button
+                        onClick={() => setShowChangelog(true)}
+                        className="text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-widest transition-colors"
+                    >
+                        What's New
+                    </button>
+                </div>
+            </div>
+
+            {/* Changelog Modal */}
+            <ChangelogModal isOpen={showChangelog} onClose={() => setShowChangelog(false)} />
+
+            {/* Help Sidebar */}
+            <HelpSidebar isOpen={showHelpSidebar} onClose={() => setShowHelpSidebar(false)} />
+        </aside>
+    );
+}
