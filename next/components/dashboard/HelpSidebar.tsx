@@ -165,7 +165,8 @@ export default function HelpSidebar({ isOpen, onClose }: HelpSidebarProps) {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[100]"
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm"
+                            style={{ zIndex: 99998 }}
                             onClick={onClose}
                         />
 
@@ -175,7 +176,8 @@ export default function HelpSidebar({ isOpen, onClose }: HelpSidebarProps) {
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                            className="fixed right-0 top-0 h-screen w-full max-w-2xl bg-white shadow-2xl z-[101] flex flex-col"
+                            className="fixed right-0 top-0 h-screen w-full max-w-2xl bg-white shadow-2xl flex flex-col"
+                            style={{ zIndex: 99999 }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Header */}

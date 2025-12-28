@@ -82,115 +82,117 @@ export default function Sidebar() {
     };
 
     return (
-        <aside className="w-72 h-screen border-r border-gray-100 bg-white flex flex-col sticky top-0">
-            {/* Context Switcher Section */}
-            <div className="p-4 mb-4">
-                <ContextSwitcher />
-            </div>
+        <>
+            <aside className="w-72 h-screen border-r border-gray-100 bg-white flex flex-col sticky top-0">
+                {/* Context Switcher Section */}
+                <div className="p-4 mb-4">
+                    <ContextSwitcher />
+                </div>
 
-            {/* Main Navigation */}
-            <nav className="flex-1 px-4 space-y-1">
-                <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    Main Menu
-                </p>
-                {navItems.map((item) => {
-                    const href = getHref(item.href);
-                    const isActive = currentPathWithSearch === href || pathname === href;
-                    const isGuardrails = item.href === '/guardrails';
-                    const isDisabled = isGuardrails && !activeProject;
+                {/* Main Navigation */}
+                <nav className="flex-1 px-4 space-y-1">
+                    <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        Main Menu
+                    </p>
+                    {navItems.map((item) => {
+                        const href = getHref(item.href);
+                        const isActive = currentPathWithSearch === href || pathname === href;
+                        const isGuardrails = item.href === '/guardrails';
+                        const isDisabled = isGuardrails && !activeProject;
 
-                    return (
-                        <Link
-                            key={item.href}
-                            href={href}
-                            onClick={(e) => {
-                                if (isDisabled) {
-                                    e.preventDefault();
-                                    alert('Please select a project to configure SRE Guardrails.');
-                                }
-                            }}
-                            className={`
+                        return (
+                            <Link
+                                key={item.href}
+                                href={href}
+                                onClick={(e) => {
+                                    if (isDisabled) {
+                                        e.preventDefault();
+                                        alert('Please select a project to configure SRE Guardrails.');
+                                    }
+                                }}
+                                className={`
                                 flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
                                 ${isActive
-                                    ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}
+                                        ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}
                                 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
                             `}
-                        >
-                            <item.icon size={20} className={isActive ? 'text-white' : 'text-gray-400'} />
-                            {item.name}
-                        </Link>
-                    );
-                })}
-            </nav>
+                            >
+                                <item.icon size={20} className={isActive ? 'text-white' : 'text-gray-400'} />
+                                {item.name}
+                            </Link>
+                        );
+                    })}
+                </nav>
 
-            {/* Secondary Navigation */}
-            <nav className="px-4 py-6 border-t border-gray-50 space-y-1">
-                <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    System
-                </p>
-                {secondaryNavItems.map((item) => {
-                    const href = getHref(item.href);
-                    const isActive = currentPathWithSearch === href;
-                    return (
-                        <Link
-                            key={item.href}
-                            href={href}
-                            className={`
+                {/* Secondary Navigation */}
+                <nav className="px-4 py-6 border-t border-gray-50 space-y-1">
+                    <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        System
+                    </p>
+                    {secondaryNavItems.map((item) => {
+                        const href = getHref(item.href);
+                        const isActive = currentPathWithSearch === href;
+                        return (
+                            <Link
+                                key={item.href}
+                                href={href}
+                                className={`
                                 flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
                                 ${isActive
-                                    ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}
+                                        ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}
                             `}
-                        >
-                            <item.icon size={20} className={isActive ? 'text-white' : 'text-gray-400'} />
-                            {item.name}
-                        </Link>
-                    );
-                })}
+                            >
+                                <item.icon size={20} className={isActive ? 'text-white' : 'text-gray-400'} />
+                                {item.name}
+                            </Link>
+                        );
+                    })}
 
-                {/* Help Button */}
-                <button
-                    onClick={() => setShowHelpSidebar(true)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                >
-                    <HelpCircle size={20} className="text-gray-400" />
-                    Help
-                </button>
-            </nav>
-
-            {/* Footer / User Profile */}
-            <div className="p-4 border-t border-gray-50 space-y-3">
-                <div className="flex items-center gap-3 p-2 rounded-xl bg-gray-50/50 border border-transparent hover:border-gray-100 transition-all cursor-pointer group">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 overflow-hidden">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-gray-900 truncate">Felix Miller</p>
-                        <p className="text-xs text-gray-500 truncate">SRE Lead</p>
-                    </div>
-                    <div className="w-2 h-2 rounded-full bg-green-500 border-2 border-white shadow-sm"></div>
-                </div>
-
-                {/* Version & Changelog */}
-                <div className="px-2 py-2 flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                        Version 1.0.0
-                    </span>
+                    {/* Help Button */}
                     <button
-                        onClick={() => setShowChangelog(true)}
-                        className="text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-widest transition-colors"
+                        onClick={() => setShowHelpSidebar(true)}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                     >
-                        What's New
+                        <HelpCircle size={20} className="text-gray-400" />
+                        Help
                     </button>
+                </nav>
+
+                {/* Footer / User Profile */}
+                <div className="p-4 border-t border-gray-50 space-y-3">
+                    <div className="flex items-center gap-3 p-2 rounded-xl bg-gray-50/50 border border-transparent hover:border-gray-100 transition-all cursor-pointer group">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 overflow-hidden">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-gray-900 truncate">Felix Miller</p>
+                            <p className="text-xs text-gray-500 truncate">SRE Lead</p>
+                        </div>
+                        <div className="w-2 h-2 rounded-full bg-green-500 border-2 border-white shadow-sm"></div>
+                    </div>
+
+                    {/* Version & Changelog */}
+                    <div className="px-2 py-2 flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                            Version 1.0.0
+                        </span>
+                        <button
+                            onClick={() => setShowChangelog(true)}
+                            className="text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-widest transition-colors"
+                        >
+                            What's New
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            {/* Changelog Modal */}
-            <ChangelogModal isOpen={showChangelog} onClose={() => setShowChangelog(false)} />
+                {/* Changelog Modal */}
+                <ChangelogModal isOpen={showChangelog} onClose={() => setShowChangelog(false)} />
+            </aside>
 
-            {/* Help Sidebar */}
+            {/* Help Sidebar - Rendered outside to avoid stacking context issues */}
             <HelpSidebar isOpen={showHelpSidebar} onClose={() => setShowHelpSidebar(false)} />
-        </aside>
+        </>
     );
 }
