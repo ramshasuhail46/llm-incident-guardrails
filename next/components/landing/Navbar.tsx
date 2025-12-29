@@ -10,8 +10,8 @@ export default function Navbar() {
 
     return (
         <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isProductPage
-                ? "bg-[#0A0A0A]/80 border-white/10 backdrop-blur-md"
-                : "glass border-gray-100"
+            ? "bg-[#0A0A0A]/80 border-white/10 backdrop-blur-md"
+            : "glass border-gray-100"
             }`}>
             <div className="container mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2">
@@ -28,7 +28,7 @@ export default function Navbar() {
                     }`}>
                     <Link href="/product" className="hover:text-primary transition-colors">Product</Link>
                     <a href="#" className="hover:text-primary transition-colors">Solutions</a>
-                    <a href="#" className="hover:text-primary transition-colors">Pricing</a>
+                    <Link href="/pricing" className="hover:text-primary transition-colors">Pricing</Link>
                     <Link href="/docs" className="hover:text-primary transition-colors">Documentation</Link>
                 </div>
 

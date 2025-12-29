@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
     return (
         <footer className="bg-[#0F172A] text-gray-400 py-16 border-t border-white/5">
@@ -23,6 +25,7 @@ export default function Footer() {
                             <li><a href="#" className="hover:text-primary transition-colors">Features</a></li>
                             <li><a href="#" className="hover:text-primary transition-colors">Integrations</a></li>
                             <li><a href="#" className="hover:text-primary transition-colors">Status Page</a></li>
+                            <li><Link href="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
                             <li><a href="#" className="hover:text-primary transition-colors">Playbooks</a></li>
                         </ul>
                     </div>
