@@ -165,6 +165,10 @@ export default function IncidentList() {
                             </div>
                         </div>
                     ))
+                ) : !Array.isArray(incidents) ? (
+                    <div className="p-8 text-center text-red-400 italic">
+                        Failed to load incidents. Please check your database connection.
+                    </div>
                 ) : incidents.length === 0 ? (
                     <div className="p-8 text-center text-gray-400 italic">No incidents found</div>
                 ) : (

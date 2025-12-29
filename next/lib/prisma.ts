@@ -1,8 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
 const getPrismaClient = () => {
-  // During build, we don't provide any configuration. 
-  // Prisma 7 will read from prisma.config.ts or DATABASE_URL at runtime.
   return new PrismaClient();
 };
 
