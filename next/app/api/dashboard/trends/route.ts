@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
+export const dynamic = 'force-dynamic';
 import { subDays, startOfDay, format } from "date-fns";
 
 export async function GET(request: Request) {

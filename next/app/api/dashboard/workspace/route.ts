@@ -3,6 +3,8 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         // Falling back to raw SQL because Prisma client in Next.js runtime is stale and doesn't see 'slug'
