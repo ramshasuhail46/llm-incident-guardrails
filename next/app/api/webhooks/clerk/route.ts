@@ -117,7 +117,6 @@ export async function POST(req: Request) {
                         clerkId: id,
                         name: name,
                         slug: slug || `org-${id}`,
-                        isPersonal: false,
                     },
                 });
 
@@ -191,11 +190,12 @@ export async function POST(req: Request) {
                     });
 
                     // If it was a personal org, delete it too
+                    // Removed legacy isPersonal check
+                    /*
                     if (user.organization.isPersonal) {
-                        await tx.organization.delete({
-                            where: { id: user.organization.id }
-                        });
+                     // logic removed
                     }
+                    */
                 });
                 console.log('User and personal org deleted:', id);
             }

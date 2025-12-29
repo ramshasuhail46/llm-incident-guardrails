@@ -45,7 +45,6 @@ export async function GET(request: Request) {
                     clerkId: clerkOrg.id,
                     name: clerkOrg.name,
                     slug: clerkOrg.slug || `org-${clerkOrg.id}`,
-                    isPersonal: false,
                 }
             });
 

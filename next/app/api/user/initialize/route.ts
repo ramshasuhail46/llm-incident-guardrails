@@ -44,8 +44,7 @@ export async function POST() {
                 data: {
                     name: `${clerkUser.firstName || 'User'}'s Workspace`,
                     slug: `user-${userId}`,
-                    isPersonal: true,
-                    clerkId: null,
+                    clerkId: null, // Personal orgs don't have Clerk IDs, but this route is deprecated anyway
                 },
             });
 

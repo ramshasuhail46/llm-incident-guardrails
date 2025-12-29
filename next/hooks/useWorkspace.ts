@@ -13,7 +13,6 @@ export interface Organization {
     clerkId: string | null;
     name: string;
     slug: string;
-    isPersonal: boolean;
     projects: Project[];
 }
 
