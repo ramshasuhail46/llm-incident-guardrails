@@ -1,7 +1,6 @@
-'use client';
-
-import { X, CheckCircle, AlertTriangle, Info, Clock, Shield, Brain } from 'lucide-react';
+import { X, CheckCircle, AlertTriangle, Info, Clock, Shield, Brain, Lock } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useWorkspace } from '@/hooks/useWorkspace';
 
 interface IncidentDetailProps {
     isOpen: boolean;
@@ -11,6 +10,7 @@ interface IncidentDetailProps {
 }
 
 export default function IncidentDetail({ isOpen, onClose, incident, onResolve }: IncidentDetailProps) {
+    const { isDemo } = useWorkspace();
     const [isResolving, setIsResolving] = useState(false);
 
     if (!incident) return null;
@@ -25,6 +25,7 @@ export default function IncidentDetail({ isOpen, onClose, incident, onResolve }:
     };
 
     const handleResolve = async () => {
+        if (isDemo) return;
         setIsResolving(true);
         try {
             await onResolve(incident.id);
@@ -150,23 +151,31 @@ export default function IncidentDetail({ isOpen, onClose, incident, onResolve }:
                                 This incident is resolved
                             </div>
                         ) : (
-                            <button
-                                onClick={handleResolve}
-                                disabled={isResolving}
-                                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-gray-800 transition-all disabled:opacity-50"
-                            >
-                                {isResolving ? (
-                                    <span className="flex items-center gap-2">
-                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        RESOLVING...
-                                    </span>
-                                ) : (
-                                    <>
-                                        <CheckCircle size={18} />
-                                        MARK AS RESOLVED
-                                    </>
+                            <div className="space-y-3">
+                                <button
+                                    onClick={handleResolve}
+                                    disabled={isResolving || isDemo}
+                                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isResolving ? (
+                                        <span className="flex items-center gap-2">
+                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                            RESOLVING...
+                                        </span>
+                                    ) : (
+                                        <>
+                                            {isDemo && <Lock size={16} className="text-gray-400" />}
+                                            <CheckCircle size={18} />
+                                            MARK AS RESOLVED
+                                        </>
+                                    )}
+                                </button>
+                                {isDemo && (
+                                    <p className="text-[11px] text-center text-gray-500 font-medium">
+                                        Action disabled in Demo Mode. Sign up to enable full features.
+                                    </p>
                                 )}
-                            </button>
+                            </div>
                         )}
                     </div>
                 </div>

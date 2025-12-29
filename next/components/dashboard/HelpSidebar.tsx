@@ -57,7 +57,7 @@ export default function HelpSidebar({ isOpen, onClose }: HelpSidebarProps) {
         visible: false,
     });
 
-    const { activeOrg, activeProject } = useWorkspace();
+    const { activeOrg, activeProject, isDemo } = useWorkspace();
 
     // Filter FAQs based on search query
     useEffect(() => {
@@ -100,6 +100,15 @@ export default function HelpSidebar({ isOpen, onClose }: HelpSidebarProps) {
 
     const handleSubmitFeedback = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (isDemo) {
+            setToast({
+                message: 'Support submissions are disabled in Demo Mode.',
+                type: 'info',
+                visible: true,
+            });
+            return;
+        }
 
         if (!message.trim() || message.trim().length < 10) {
             setToast({
@@ -353,7 +362,7 @@ export default function HelpSidebar({ isOpen, onClose }: HelpSidebarProps) {
 
                                         <button
                                             type="submit"
-                                            disabled={isSubmitting}
+                                            disabled={isSubmitting || isDemo}
                                             className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20"
                                         >
                                             {isSubmitting ? (
@@ -364,7 +373,7 @@ export default function HelpSidebar({ isOpen, onClose }: HelpSidebarProps) {
                                             ) : (
                                                 <>
                                                     <Send size={18} />
-                                                    Submit Request
+                                                    {isDemo ? 'Disabled in Demo' : 'Submit Request'}
                                                 </>
                                             )}
                                         </button>

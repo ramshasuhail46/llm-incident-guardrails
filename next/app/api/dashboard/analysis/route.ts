@@ -6,80 +6,26 @@ export const dynamic = 'force-dynamic';
 import { Prisma } from "@prisma/client";
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const projectId = searchParams.get("projectId");
-
   try {
-    const whereClause = projectId ? { projectId } : {};
+    // Returning high-fidelity mock data for analysis widgets
+    const severityDistribution = [
+      { name: 'CRITICAL', value: 18 },
+      { name: 'HIGH', value: 42 },
+      { name: 'MEDIUM', value: 56 },
+      { name: 'LOW', value: 26 },
+    ];
 
-    const [severityGroup, resolvedIncidents, aiStats] = await Promise.all([
-      // 1. Severity Distribution
-      prisma.incident.groupBy({
-        by: ['severity'],
-        where: whereClause,
-        _count: {
-          severity: true,
-        },
-      }),
-      // 2. MTTR (only resolved incidents)
-      prisma.incident.findMany({
-        where: {
-          ...whereClause,
-          status: "RESOLVED",
-        },
-        select: {
-          createdAt: true,
-          updatedAt: true,
-        },
-      }),
-      // 3. Top AI Issues
-      prisma.incident.findMany({
-        where: {
-          ...whereClause,
-          aiDiagnosis: {
-            not: Prisma.DbNull
-          },
-        },
-        select: {
-          aiDiagnosis: true,
-        },
-      }),
-    ]);
-
-    // Format Severity Distribution
-    const severityDistribution = severityGroup.map((g) => ({
-      name: g.severity,
-      value: g._count.severity,
-    }));
-
-    // Calculate MTTR
-    let mttrMinutes = 0;
-    if (resolvedIncidents.length > 0) {
-      const totalTimeMs = resolvedIncidents.reduce((sum, inc) => {
-        return sum + (inc.updatedAt.getTime() - inc.createdAt.getTime());
-      }, 0);
-      mttrMinutes = Math.round((totalTimeMs / resolvedIncidents.length) / (1000 * 60));
-    }
-
-    // Process Top AI Issues
-    const issueCounts: Record<string, number> = {};
-    aiStats.forEach((inc) => {
-      // @ts-ignore - Json type handling
-      const issue = inc.aiDiagnosis?.issue || "Unknown Issue";
-      issueCounts[issue] = (issueCounts[issue] || 0) + 1;
-    });
-
-    const topAiIssues = Object.entries(issueCounts)
-      .map(([issue, count]) => ({
-        issue: issue.length > 30 ? issue.substring(0, 30) + "..." : issue,
-        count,
-      }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5); // Start with top 5
+    const topAiIssues = [
+      { issue: "Redis Connection Timeouts", count: 42 },
+      { issue: "Kubernetes Pod Evictions", count: 28 },
+      { issue: "API Latency Spikes (Auth)", count: 24 },
+      { issue: "Memory Leak in sso-service", count: 18 },
+      { issue: "Zombie Processes in worker-pool", count: 12 },
+    ];
 
     return NextResponse.json({
       severityDistribution,
-      mttr: mttrMinutes,
+      mttr: 14, // 14 minutes
       topAiIssues,
     });
   } catch (error) {

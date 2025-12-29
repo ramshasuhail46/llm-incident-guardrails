@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+}
+
 :root {
   --background: #F9FAFB;
   --foreground: #111827;

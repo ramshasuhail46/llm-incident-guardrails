@@ -6,7 +6,6 @@ import {
     ChevronLeft,
     Clock,
     Bot,
-    User,
     Activity,
     ShieldCheck,
     AlertCircle,
@@ -14,6 +13,7 @@ import {
     ExternalLink,
     Code2
 } from 'lucide-react';
+import { useWorkspace } from '@/hooks/useWorkspace';
 
 interface ReportData {
     id: string;
@@ -42,13 +42,14 @@ interface ReportData {
 export default function IncidentReport() {
     const { slug, id: projectId, incidentId } = useParams() as { slug: string, id: string, incidentId: string };
     const router = useRouter();
+    const { isDemo } = useWorkspace();
     const [report, setReport] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchReport() {
             try {
-                const res = await fetch(`/api/incidents/${incidentId}/report`);
+                const res = await fetch(`/api/incidents/${incidentId}/report${isDemo ? '?demo=true' : ''}`);
                 const data = await res.json();
                 setReport(data);
             } catch (err) {
@@ -58,7 +59,7 @@ export default function IncidentReport() {
             }
         }
         fetchReport();
-    }, [incidentId]);
+    }, [incidentId, isDemo]);
 
     if (loading) return (
         <div className="flex items-center justify-center min-h-screen">
@@ -76,7 +77,7 @@ export default function IncidentReport() {
                 {/* Back Button & Header */}
                 <div className="mb-10">
                     <button
-                        onClick={() => router.back()}
+                        onClick={() => router.push(`/org/${slug}/proj/${projectId}/history${isDemo ? '?demo=true' : ''}`)}
                         className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 font-bold text-xs uppercase tracking-widest mb-4 transition-all"
                     >
                         <ChevronLeft size={16} />
@@ -194,7 +195,7 @@ export default function IncidentReport() {
                                 </div>
 
                                 {/* Resolution Event */}
-                                {report.auditLogs.find(l => l.action === 'RESOLVE_INCIDENT') ? (
+                                {report.auditLogs.find((l: any) => l.action === 'RESOLVE_INCIDENT') ? (
                                     <div className="relative flex gap-4">
                                         <div className="w-6 h-6 rounded-full bg-green-50 border-2 border-green-200 flex items-center justify-center shrink-0 relative z-10 bg-white">
                                             <ShieldCheck size={12} className="text-green-500" />
@@ -202,9 +203,9 @@ export default function IncidentReport() {
                                         <div>
                                             <p className="text-[10px] font-black text-green-600 uppercase tracking-tight mb-0.5">Resolution</p>
                                             <p className="text-xs font-bold text-gray-900">Marked as Resolved</p>
-                                            <p className="text-[10px] text-gray-400 font-medium">{new Date(report.auditLogs.find(l => l.action === 'RESOLVE_INCIDENT')!.createdAt).toLocaleString()}</p>
+                                            <p className="text-[10px] text-gray-400 font-medium">{new Date(report.auditLogs.find((l: any) => l.action === 'RESOLVE_INCIDENT')!.createdAt).toLocaleString()}</p>
                                             <div className="mt-2 text-[10px] bg-gray-50 p-2 rounded border border-gray-100 italic text-gray-500">
-                                                Confirmed by {report.auditLogs.find(l => l.action === 'RESOLVE_INCIDENT')?.user.email}
+                                                Confirmed by {report.auditLogs.find((l: any) => l.action === 'RESOLVE_INCIDENT')?.user.email}
                                             </div>
                                         </div>
                                     </div>

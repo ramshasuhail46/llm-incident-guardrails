@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function CTA() {
     return (
         <section className="py-20 lg:py-28">
@@ -13,13 +15,19 @@ export default function CTA() {
                         <p className="text-xl text-gray-400 mb-10">
                             Join hundreds of engineering teams who trust IncidentFlow to manage their critical infrastructure.
                         </p>
-                        <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <button className="px-8 py-4 bg-primary text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all shadow-lg shadow-primary/20">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <Link
+                                href="/sign-up"
+                                className="px-8 py-4 bg-primary text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all shadow-lg shadow-primary/20 text-center w-full sm:w-auto"
+                            >
                                 Start Free Trial
-                            </button>
-                            <button className="px-8 py-4 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-all border border-white/10">
-                                Talk to Sales
-                            </button>
+                            </Link>
+                            <Link
+                                href="/dashboard?demo=true"
+                                className="px-8 py-4 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-all border border-white/10 text-center w-full sm:w-auto"
+                            >
+                                Explore Live Demo
+                            </Link>
                         </div>
                     </div>
                 </div>

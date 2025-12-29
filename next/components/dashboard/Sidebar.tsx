@@ -35,7 +35,7 @@ const secondaryNavItems = [
 export default function Sidebar() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const { activeOrg, activeProject } = useWorkspace();
+    const { activeOrg, activeProject, isDemo } = useWorkspace();
     const [showChangelog, setShowChangelog] = useState(false);
     const [showHelpSidebar, setShowHelpSidebar] = useState(false);
 
@@ -139,7 +139,10 @@ export default function Sidebar() {
                     <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                         Main Menu
                     </p>
-                    {navItems.map((item) => {
+                    {navItems.filter(item => {
+                        if (isDemo && item.name === 'SRE Guardrails') return false;
+                        return true;
+                    }).map((item) => {
                         const href = getHref(item.href);
                         const isActive = currentPathWithSearch === href || pathname === href;
                         const isGuardrails = item.href === '/guardrails';
@@ -175,7 +178,10 @@ export default function Sidebar() {
                     <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                         System
                     </p>
-                    {secondaryNavItems.map((item) => {
+                    {secondaryNavItems.filter(item => {
+                        if (isDemo && (item.name === 'Team' || item.name === 'History' || item.name === 'Settings')) return false;
+                        return true;
+                    }).map((item) => {
                         const href = getHref(item.href);
                         const isActive = currentPathWithSearch === href;
                         return (
@@ -207,21 +213,23 @@ export default function Sidebar() {
 
                 {/* Footer / User Profile */}
                 <div className="p-4 border-t border-gray-50 space-y-3">
-                    <UserButton
-                        afterSignOutUrl="/"
-                        appearance={{
-                            elements: {
-                                rootBox: "w-full",
-                                card: "w-full",
-                                userButtonBox: "w-full",
-                                userButtonTrigger: "w-full flex items-center gap-3 p-2 rounded-xl bg-gray-50/50 border border-transparent hover:border-gray-100 transition-all group",
-                                userButtonAvatarBox: "w-10 h-10 rounded-full",
-                                userButtonOuterIdentifier: "text-sm font-bold text-gray-900",
-                                userButtonInnerIdentifier: "text-xs text-gray-500",
-                            }
-                        }}
-                        showName={true}
-                    />
+                    {!isDemo && (
+                        <UserButton
+                            afterSignOutUrl="/"
+                            appearance={{
+                                elements: {
+                                    rootBox: "w-full",
+                                    card: "w-full",
+                                    userButtonBox: "w-full",
+                                    userButtonTrigger: "w-full flex items-center gap-3 p-2 rounded-xl bg-gray-50/50 border border-transparent hover:border-gray-100 transition-all group",
+                                    userButtonAvatarBox: "w-10 h-10 rounded-full",
+                                    userButtonOuterIdentifier: "text-sm font-bold text-gray-900",
+                                    userButtonInnerIdentifier: "text-xs text-gray-500",
+                                }
+                            }}
+                            showName={true}
+                        />
+                    )}
 
                     {/* Version & Changelog */}
                     <div className="px-2 py-2 flex items-center justify-between">

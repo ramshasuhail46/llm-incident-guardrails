@@ -3,17 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
-    Search,
-    Filter,
-    Calendar,
+    History,
     ChevronLeft,
     ChevronRight,
     FileText,
-    AlertTriangle,
-    CheckCircle2,
-    Archive as ArchiveIcon,
-    History
 } from 'lucide-react';
+import { useWorkspace } from '@/hooks/useWorkspace';
 
 interface Incident {
     id: string;
@@ -38,6 +33,7 @@ interface Pagination {
 export default function ProjectHistoryArchive() {
     const { slug, id: projectId } = useParams() as { slug: string; id: string };
     const router = useRouter();
+    const { isDemo } = useWorkspace();
 
     // State
     const [incidents, setIncidents] = useState<Incident[]>([]);
@@ -59,6 +55,7 @@ export default function ProjectHistoryArchive() {
             });
             if (startDate) params.append('startDate', startDate);
             if (endDate) params.append('endDate', endDate);
+            if (isDemo) params.append('demo', 'true');
 
             const res = await fetch(`/api/incidents/archive?${params.toString()}`);
             const data = await res.json();
@@ -73,7 +70,7 @@ export default function ProjectHistoryArchive() {
 
     useEffect(() => {
         fetchArchive();
-    }, [page, startDate, endDate]);
+    }, [page, startDate, endDate, isDemo]);
 
     const getSeverityStyles = (severity: string) => {
         switch (severity.toUpperCase()) {
@@ -185,7 +182,7 @@ export default function ProjectHistoryArchive() {
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <button
-                                                    onClick={() => router.push(`/org/${slug}/proj/${projectId}/history/${incident.id}`)}
+                                                    onClick={() => router.push(`/org/${slug}/proj/${projectId}/history/${incident.id}${isDemo ? '?demo=true' : ''}`)}
                                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-bold hover:bg-gray-800 transition-all shadow-sm"
                                                 >
                                                     <FileText size={14} />

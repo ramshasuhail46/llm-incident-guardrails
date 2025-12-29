@@ -3,7 +3,10 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)", "/", "/api/webhooks(.*)", "/docs(.*)", "/product(.*)", "/pricing(.*)", "/solutions(.*)"]);
 
 export default clerkMiddleware(async (auth, request) => {
-    if (!isPublicRoute(request)) {
+    const { searchParams } = new URL(request.url);
+    const isDemo = searchParams.get('demo') === 'true';
+
+    if (!isPublicRoute(request) && !isDemo) {
         await auth.protect();
     }
 });

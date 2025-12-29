@@ -4,7 +4,10 @@ import { NextResponse } from "next/server";
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
+    const { searchParams } = new URL(request.url);
+    const isDemo = searchParams.get('demo') === 'true';
+
     try {
         // Falling back to raw SQL because Prisma client in Next.js runtime is stale and doesn't see 'slug'
         const rawOrgs = await prisma.$queryRaw<any[]>`SELECT * FROM "Organization" ORDER BY name ASC`;

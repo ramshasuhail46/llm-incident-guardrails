@@ -21,23 +21,33 @@ interface WorkspaceState {
     activeProject: Project | null; // null means "All Projects"
     organizations: Organization[];
     isSyncing: boolean;
+    isDemo: boolean;
     setWorkspace: (org: Organization, project: Project | null) => void;
     setOrganizations: (orgs: Organization[]) => void;
     setIsSyncing: (isSyncing: boolean) => void;
+    setIsDemo: (isDemo: boolean) => void;
     fetchWorkspaceData: () => Promise<void>;
 }
+
+const getInitialIsDemo = () => {
+    if (typeof window === 'undefined') return false;
+    return new URLSearchParams(window.location.search).get('demo') === 'true';
+};
 
 export const useWorkspace = create<WorkspaceState>((set, get) => ({
     activeOrg: null,
     activeProject: null,
     organizations: [],
     isSyncing: false,
+    isDemo: getInitialIsDemo(),
     setWorkspace: (org, project) => set({ activeOrg: org, activeProject: project }),
     setOrganizations: (orgs) => set({ organizations: orgs }),
     setIsSyncing: (isSyncing) => set({ isSyncing }),
+    setIsDemo: (isDemo) => set({ isDemo }),
     fetchWorkspaceData: async () => {
         try {
-            const res = await fetch('/api/dashboard/workspace');
+            const { isDemo: isDemoMode } = get();
+            const res = await fetch(`/api/dashboard/workspace${isDemoMode ? '?demo=true' : ''}`);
             const data = await res.json();
             set({ organizations: data });
 

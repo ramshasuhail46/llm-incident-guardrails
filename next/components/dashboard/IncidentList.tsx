@@ -7,7 +7,7 @@ import IncidentDetail from './IncidentDetail';
 import { useWorkspace } from '@/hooks/useWorkspace';
 
 export default function IncidentList() {
-    const { activeProject, isSyncing } = useWorkspace();
+    const { activeProject, isSyncing, isDemo } = useWorkspace();
     const [incidents, setIncidents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [hasHydrated, setHasHydrated] = useState(false);
@@ -39,7 +39,12 @@ export default function IncidentList() {
         async function fetchIncidents() {
             setLoading(true);
             try {
-                const res = await fetch('/api/dashboard/incidents');
+                const params = new URLSearchParams();
+                if (activeProject?.id) params.append('projectId', activeProject.id);
+                if (isDemo) params.append('demo', 'true');
+                const queryString = params.toString() ? `?${params.toString()}` : '';
+
+                const res = await fetch(`/api/dashboard/incidents${queryString}`);
                 const data = await res.json();
                 setIncidents(data);
             } catch (err) {
@@ -50,7 +55,7 @@ export default function IncidentList() {
         }
         fetchIncidents();
         setHasHydrated(true);
-    }, [activeProject]);
+    }, [activeProject, isDemo]);
 
     const showSkeleton = loading || isSyncing;
     const showProjectBadge = !activeProject;
@@ -71,7 +76,7 @@ export default function IncidentList() {
         setIsModalOpen(true);
 
         try {
-            const response = await fetch('/api/diagnose', {
+            const response = await fetch(`/api/diagnose${isDemo ? '?demo=true' : ''}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -100,7 +105,7 @@ export default function IncidentList() {
 
         const pollInterval = setInterval(async () => {
             try {
-                const response = await fetch(`/api/diagnose/${taskId}`);
+                const response = await fetch(`/api/diagnose/${taskId}${isDemo ? '?demo=true' : ''}`);
                 const data = await response.json();
 
                 if (data.status === 'SUCCESS') {
@@ -130,7 +135,7 @@ export default function IncidentList() {
 
     const handleResolve = async (id: string) => {
         try {
-            const res = await fetch(`/api/incidents/${id}/resolve`, {
+            const res = await fetch(`/api/incidents/${id}/resolve${isDemo ? '?demo=true' : ''}`, {
                 method: 'POST',
             });
             if (res.ok) {

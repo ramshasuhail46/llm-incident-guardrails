@@ -12,31 +12,40 @@ import { useParams } from 'next/navigation';
 
 export default function DashboardContent() {
     const { slug, id } = useParams() as { slug?: string, id?: string };
-    const { organizations, setWorkspace, activeProject, setIsSyncing } = useWorkspace();
+    const { organizations, setWorkspace, activeProject, setIsSyncing, isDemo } = useWorkspace();
     const { stats, trends, analysis, isLoading } = useDashboardAnalytics();
 
     useEffect(() => {
-        if (slug && organizations.length > 0) {
-            const org = organizations.find(o => o.slug === slug);
-            if (!org) return;
+        if (organizations.length > 0) {
+            if (slug) {
+                const org = organizations.find(o => o.slug === slug);
+                if (!org) return;
 
-            if (id) {
-                const project = org.projects.find(p => p.id === id);
-                if (project && (activeProject?.id !== id)) {
-                    setIsSyncing(true);
-                    setWorkspace(org, project);
-                    setTimeout(() => setIsSyncing(false), 500);
+                if (id) {
+                    const project = org.projects.find(p => p.id === id);
+                    if (project && (activeProject?.id !== id)) {
+                        setIsSyncing(true);
+                        setWorkspace(org, project);
+                        setTimeout(() => setIsSyncing(false), 500);
+                    }
+                } else {
+                    // All Projects view
+                    if (activeProject !== null) {
+                        setIsSyncing(true);
+                        setWorkspace(org, null);
+                        setTimeout(() => setIsSyncing(false), 500);
+                    }
                 }
-            } else {
-                // All Projects view
-                if (activeProject !== null) {
-                    setIsSyncing(true);
-                    setWorkspace(org, null);
-                    setTimeout(() => setIsSyncing(false), 500);
-                }
+            } else if (isDemo && !activeProject) {
+                // Auto-select first org/project in demo mode if nothing selected
+                const firstOrg = organizations[0];
+                const firstProject = firstOrg.projects[0] || null;
+                setIsSyncing(true);
+                setWorkspace(firstOrg, firstProject);
+                setTimeout(() => setIsSyncing(false), 500);
             }
         }
-    }, [slug, id, organizations, setWorkspace, activeProject, setIsSyncing]);
+    }, [slug, id, organizations, setWorkspace, activeProject, setIsSyncing, isDemo]);
 
     return (
         <div className="min-h-screen bg-[#F9FAFB] selection:bg-primary/20 selection:text-primary">

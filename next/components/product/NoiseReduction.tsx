@@ -94,7 +94,7 @@ export default function NoiseReduction() {
                         {/* LEFT SIDE (BEFORE - Raw Logs) - LAYER 2 (Clipped) */}
                         <div
                             className="absolute inset-0 bg-[#050505] overflow-hidden"
-                            style={{ clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)` }}
+                            style={{ clipPath: `polygon(0% 0%, ${sliderPosition}% 0%, ${sliderPosition}% 100%, 0% 100%)` }}
                         >
                             <div className="p-8 h-full font-mono text-xs text-gray-500 opacity-60 overflow-hidden relative">
                                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-500/5 to-transparent animate-pulse pointer-events-none" />

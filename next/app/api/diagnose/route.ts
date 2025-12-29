@@ -5,6 +5,13 @@ import redis from '@/shared/redis';
 
 export async function POST(req: NextRequest) {
     try {
+        const { searchParams } = new URL(req.url);
+        const isDemo = searchParams.get('demo') === 'true';
+
+        if (isDemo) {
+            return NextResponse.json({ taskId: 'demo-task-' + uuidv4() });
+        }
+
         const body = await req.json();
         const { signals } = body;
 
@@ -26,7 +33,7 @@ export async function POST(req: NextRequest) {
             {},         // kwargs - empty dict (no keyword arguments)
             {}          // embed - empty dict (no callbacks)
         ];
-        
+
         const taskMessage = {
             headers: {
                 id: taskId,

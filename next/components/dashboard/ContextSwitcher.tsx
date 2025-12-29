@@ -17,14 +17,14 @@ import { useRouter, usePathname } from 'next/navigation';
 export default function ContextSwitcher() {
     const router = useRouter();
     const pathname = usePathname();
-    const { activeOrg, activeProject, setWorkspace, setOrganizations, organizations, setIsSyncing } = useWorkspace();
+    const { activeOrg, activeProject, setWorkspace, setOrganizations, organizations, setIsSyncing, isDemo } = useWorkspace();
     const [isOpen, setIsOpen] = React.useState(false);
 
     // Initialize state if not set
     React.useEffect(() => {
         async function fetchWorkspace() {
             try {
-                const res = await fetch('/api/dashboard/workspace');
+                const res = await fetch(`/api/dashboard/workspace${isDemo ? '?demo=true' : ''}`);
                 const data = await res.json();
                 setOrganizations(data);
 
@@ -37,16 +37,16 @@ export default function ContextSwitcher() {
             }
         }
         fetchWorkspace();
-    }, [setOrganizations, setWorkspace, activeOrg]);
+    }, [setOrganizations, setWorkspace, activeOrg, isDemo]);
 
     const handleProjectSelect = (org: Organization, project: Project | null) => {
         setIsSyncing(true);
         setWorkspace(org, project);
 
         if (project) {
-            router.push(`/org/${org.slug}/proj/${project.id}`);
+            router.push(`/org/${org.slug}/proj/${project.id}${isDemo ? '?demo=true' : ''}`);
         } else {
-            router.push(`/org/${org.slug}/dashboard`);
+            router.push(`/org/${org.slug}/dashboard${isDemo ? '?demo=true' : ''}`);
         }
 
         setIsOpen(false);
@@ -141,20 +141,24 @@ export default function ContextSwitcher() {
                         </div>
                     ))}
 
-                    <DropdownMenu.Separator className="h-px bg-gray-100 my-2 mx-1" />
+                    {!isDemo && (
+                        <>
+                            <DropdownMenu.Separator className="h-px bg-gray-100 my-2 mx-1" />
 
-                    <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg cursor-pointer outline-none transition-colors">
-                        <Plus size={14} className="text-gray-400" />
-                        <span>Create New Project</span>
-                    </DropdownMenu.Item>
+                            <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg cursor-pointer outline-none transition-colors">
+                                <Plus size={14} className="text-gray-400" />
+                                <span>Create New Project</span>
+                            </DropdownMenu.Item>
 
-                    <DropdownMenu.Item
-                        onSelect={() => router.push(`/org/${activeOrg.slug}/settings`)}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg cursor-pointer outline-none transition-colors"
-                    >
-                        <Settings size={14} className="text-gray-400" />
-                        <span>Organization Settings</span>
-                    </DropdownMenu.Item>
+                            <DropdownMenu.Item
+                                onSelect={() => router.push(`/org/${activeOrg.slug}/settings`)}
+                                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg cursor-pointer outline-none transition-colors"
+                            >
+                                <Settings size={14} className="text-gray-400" />
+                                <span>Organization Settings</span>
+                            </DropdownMenu.Item>
+                        </>
+                    )}
                 </DropdownMenu.Content>
             </DropdownMenu.Portal>
         </DropdownMenu.Root>

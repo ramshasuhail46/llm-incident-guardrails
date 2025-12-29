@@ -9,6 +9,13 @@ export async function POST(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { searchParams } = new URL(request.url);
+        const isDemo = searchParams.get('demo') === 'true';
+
+        if (isDemo) {
+            return NextResponse.json({ success: true, id: (await params).id });
+        }
+
         const { id } = await params;
 
         // 1. Fetch incident with project data using raw SQL

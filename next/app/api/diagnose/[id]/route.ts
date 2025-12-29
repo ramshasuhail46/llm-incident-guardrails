@@ -13,6 +13,31 @@ export async function GET(
             return NextResponse.json({ error: 'Task ID is required' }, { status: 400 });
         }
 
+        if (id.startsWith('demo-task-')) {
+            return NextResponse.json({
+                status: 'SUCCESS',
+                result: {
+                    summary: "Demonstration: High CPU usage detected on API nodes due to inefficient serialization in the JSON handler. This is a common pattern observed during high-traffic events.",
+                    hypotheses: [
+                        {
+                            rank: 1,
+                            cause: "JSON Serialization Overhead",
+                            confidence: 0.92,
+                            evidence: ["CPU spikes correlating with API traffic", "High time spent in JSON.stringify"],
+                            mitigation_strategy: "Implement a more efficient serialization library or cache common JSON responses."
+                        },
+                        {
+                            rank: 2,
+                            cause: "Memory Leak in Buffer Pool",
+                            confidence: 0.45,
+                            evidence: ["Gradual increase in memory usage", "Garbage collection clusters"],
+                            mitigation_strategy: "Profile memory usage and ensure all buffers are correctly deallocated."
+                        }
+                    ]
+                }
+            });
+        }
+
         const resultKey = `celery-task-meta-${id}`;
         const taskData = await redis.get(resultKey);
 

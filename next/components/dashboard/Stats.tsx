@@ -1,32 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
 import { useWorkspace } from '@/hooks/useWorkspace';
 
 export default function Stats() {
-    const { activeProject, isSyncing } = useWorkspace();
-    const [stats, setStats] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const { stats, isLoading, activeProject } = useDashboardAnalytics();
+    const { isSyncing } = useWorkspace();
 
-    useEffect(() => {
-        async function fetchStats() {
-            setLoading(true);
-            try {
-                // In a real app, we'd pass activeProject?.id to the API
-                const res = await fetch('/api/dashboard/stats');
-                const data = await res.json();
-                setStats(data);
-            } catch (err) {
-                console.error("Failed to fetch stats:", err);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchStats();
-    }, [activeProject]);
-
-    const showSkeleton = loading || isSyncing;
+    const showSkeleton = isLoading || isSyncing;
 
     if (showSkeleton) {
         return (
