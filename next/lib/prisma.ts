@@ -1,7 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 
 const getPrismaClient = () => {
-  return new PrismaClient();
+  // Prisma 7 requires explicit configuration when the schema doesn't contain a URL.
+  // We use @ts-ignore because the generated types might not reflect the runtime config yet.
+  return new PrismaClient({
+    // @ts-ignore
+    datasourceUrl: process.env.DATABASE_URL,
+  });
 };
 
 declare global {
