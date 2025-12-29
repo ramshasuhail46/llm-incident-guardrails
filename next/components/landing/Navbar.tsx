@@ -6,10 +6,10 @@ import { usePathname } from "next/navigation";
 
 export default function Navbar() {
     const pathname = usePathname();
-    const isProductPage = pathname === '/product';
+    const isDarkPage = pathname === '/product' || pathname === '/solutions';
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isProductPage
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isDarkPage
             ? "bg-[#0A0A0A]/80 border-white/10 backdrop-blur-md"
             : "glass border-gray-100"
             }`}>
@@ -18,16 +18,16 @@ export default function Navbar() {
                     <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                         <span className="text-white font-bold text-xl">I</span>
                     </div>
-                    <span className={`text-xl font-bold tracking-tight transition-colors ${isProductPage ? "text-white" : "text-gray-900"
+                    <span className={`text-xl font-bold tracking-tight transition-colors ${isDarkPage ? "text-white" : "text-gray-900"
                         }`}>
                         IncidentFlow
                     </span>
                 </Link>
 
-                <div className={`hidden md:flex items-center gap-8 text-sm font-medium transition-colors ${isProductPage ? "text-gray-300" : "text-gray-600"
+                <div className={`hidden md:flex items-center gap-8 text-sm font-medium transition-colors ${isDarkPage ? "text-gray-300" : "text-gray-600"
                     }`}>
                     <Link href="/product" className="hover:text-primary transition-colors">Product</Link>
-                    <a href="#" className="hover:text-primary transition-colors">Solutions</a>
+                    <Link href="/solutions" className="hover:text-primary transition-colors">Solutions</Link>
                     <Link href="/pricing" className="hover:text-primary transition-colors">Pricing</Link>
                     <Link href="/docs" className="hover:text-primary transition-colors">Documentation</Link>
                 </div>
@@ -36,7 +36,7 @@ export default function Navbar() {
                     <SignedOut>
                         <Link
                             href="/sign-in"
-                            className={`hidden sm:block text-sm font-semibold hover:text-primary transition-colors ${isProductPage ? "text-gray-300" : "text-gray-700"
+                            className={`hidden sm:block text-sm font-semibold hover:text-primary transition-colors ${isDarkPage ? "text-gray-300" : "text-gray-700"
                                 }`}
                         >
                             Log in
@@ -51,7 +51,7 @@ export default function Navbar() {
                     <SignedIn>
                         <Link
                             href="/dashboard"
-                            className={`font-medium transition-colors ${isProductPage ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-gray-900"
+                            className={`font-medium transition-colors ${isDarkPage ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-gray-900"
                                 }`}
                         >
                             Dashboard
