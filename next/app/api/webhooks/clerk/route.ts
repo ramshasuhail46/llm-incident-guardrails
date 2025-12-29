@@ -21,11 +21,19 @@ export async function POST(req: Request) {
     }
 
     // Get the body
-    const payload = await req.json();
-    const body = JSON.stringify(payload);
+    const body = await req.text();
+    const payload = JSON.parse(body);
 
     // Create a new Svix instance with your webhook secret
-    const wh = new Webhook(process.env.WEBHOOK_SECRET || '');
+    const webhookSecret = process.env.WEBHOOK_SECRET;
+    if (!webhookSecret) {
+        console.error('WEBHOOK_SECRET is not set in environment variables');
+        return new Response('Error occured -- no webhook secret', {
+            status: 500,
+        });
+    }
+
+    const wh = new Webhook(webhookSecret);
 
     let evt: WebhookEvent;
 
@@ -36,9 +44,10 @@ export async function POST(req: Request) {
             'svix-timestamp': svix_timestamp,
             'svix-signature': svix_signature,
         }) as WebhookEvent;
-    } catch (err) {
-        console.error('Error verifying webhook:', err);
-        return new Response('Error occured', {
+    } catch (err: any) {
+        console.error('Error verifying webhook signature:', err.message);
+        console.error('Headers:', { svix_id, svix_timestamp, svix_signature });
+        return new Response('Error occured during verification', {
             status: 400,
         });
     }
