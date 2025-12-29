@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { Users, ClipboardList, Shield, UserPlus, Clock, Hash, CheckCircle, Info } from 'lucide-react';
 
-export default function OrganizationAdmin() {
+function SettingsContent() {
     const { slug } = useParams() as { slug: string };
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -26,6 +26,7 @@ export default function OrganizationAdmin() {
         setActiveTab(tab);
         router.push(`/org/${slug}/settings?tab=${tab}`);
     };
+
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
@@ -183,5 +184,17 @@ export default function OrganizationAdmin() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function OrganizationAdmin() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        }>
+            <SettingsContent />
+        </Suspense>
     );
 }
