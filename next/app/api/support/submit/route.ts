@@ -1,7 +1,7 @@
+import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
 
 // Force dynamic rendering to prevent build-time errors
 export const dynamic = 'force-dynamic';

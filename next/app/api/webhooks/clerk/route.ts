@@ -1,9 +1,8 @@
+import { prisma } from "@/lib/prisma";
 import { headers } from 'next/headers';
 import { Webhook } from 'svix';
 import { WebhookEvent } from '@clerk/nextjs/server';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic';
 
