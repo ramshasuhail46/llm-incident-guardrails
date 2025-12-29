@@ -1,7 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+
 const getPrismaClient = () => {
-  return new PrismaClient();
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    console.warn('DATABASE_URL is missing during Prisma initialization.');
+  }
+
+  // Prisma 7 recommended approach for direct connections without schema URLs:
+  // Use the pg adapter to provide the connection at runtime.
+  const pool = new Pool({ connectionString });
+  const adapter = new PrismaPg(pool);
+
+  return new PrismaClient({ adapter });
 };
 
 declare global {
