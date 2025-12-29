@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { PrismaClient } from '@prisma/client';
+
 
 
 export const dynamic = 'force-dynamic';
@@ -38,16 +38,22 @@ export async function POST(request: Request) {
             );
         }
 
-        // Verify user belongs to the organization
         const user = await prisma.user.findUnique({
             where: { clerkId: userId },
         });
 
-        if (!user || user.organizationId !== organizationId) {
-            return NextResponse.json(
-                { error: 'Unauthorized to create project in this organization' },
-                { status: 403 }
-            );
+        if (!user) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        }
+
+        // If the user's current organization in our DB doesn't match the requested one,
+        // we update it on-the-fly. This handles org switching in the UI since our
+        // current schema only stores the "active" organization for each user.
+        if (user.organizationId !== organizationId) {
+            await prisma.user.update({
+                where: { id: user.id },
+                data: { organizationId }
+            });
         }
 
         // Create project

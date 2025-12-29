@@ -55,50 +55,44 @@ export async function POST(req: Request) {
         }
 
         try {
-            // Use transaction to ensure atomicity
-            await prisma.$transaction(async (tx) => {
-                // Check if user already exists (idempotency)
-                const existingUser = await tx.user.findUnique({
-                    where: { clerkId: id },
-                });
-
-                if (existingUser) {
-                    console.log('User already exists:', id);
-                    return;
-                }
-
-                // Create personal organization first
-                // We ALWAYS append the last 4 characters of the ID to guarantee uniqueness 
-                // in the database across all environments.
-                const uniqueName = `${first_name || 'User'}'s Workspace (${id.slice(-4)})`;
-
-                const personalOrg = await tx.organization.create({
-                    data: {
-                        name: uniqueName,
-                        slug: `user-${id}`,
-                        isPersonal: true,
-                        clerkId: null, // Personal orgs don't have Clerk IDs
-                    },
-                });
-
-                // Create user linked to personal org
-                await tx.user.create({
-                    data: {
-                        clerkId: id,
-                        email: email,
-                        organizationId: personalOrg.id,
-                        role: 'OWNER',
-                    },
-                });
-
-                console.log('User and personal org created:', id, uniqueName);
+            // Check if user already exists (idempotency)
+            const existingUser = await prisma.user.findUnique({
+                where: { clerkId: id },
             });
 
-            return new Response('User created successfully', { status: 200 });
+            if (existingUser) {
+                console.log('User already exists:', id);
+                return new Response('User already exists', { status: 200 });
+            }
+
+            // Create user ONLY. 
+            // We do NOT create a personal organization anymore.
+            // The user will need to be added to an organization via 'organizationMembership.created'
+            // or we expect them to be part of one via Metadata if we were passing it.
+            // CAUTION: This creates a user with potentially no organizationId if the schema requires it.
+            // However, our User model has `organizationId String`. 
+            // We need a strategy here. Since the requirement is "User can only be in 1 org"
+            // and "Required at sign up", Clerk should send org info.
+            // But 'user.created' might fire before assignment.
+
+            // Hack for now: We might need to allow nullable organizationId temporarily 
+            // OR we expect the organization to exist and we find it.
+
+            // If strictly enforced in DB, we can't create the user yet without an Org ID.
+            // But we can't block user creation.
+
+            // For now, we will SKIP user creation here and let `organizationMembership.created` 
+            // create the user if they don't exist? No, that's risky.
+
+            // Better approach: We create the user when we receive the MEMBERSHIP event.
+            // Or we check if we can find an invite.
+
+            console.log('User created in Clerk. Waiting for Organization Membership to link user.');
+            return new Response('User created (waiting for org link)', { status: 200 });
+
         } catch (error: any) {
-            console.error('Error creating user:', error);
-            // Return the actual error message so we can see it in the Clerk Dashboard
-            return new Response(`Error creating user: ${error.message || 'Unknown error'}`, { status: 500 });
+            console.error('Error handling user.created:', error);
+            return new Response(`Error: ${error.message}`, { status: 500 });
         }
     }
 

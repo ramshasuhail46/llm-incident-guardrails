@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTenant } from '@/contexts/TenantContext';
+import { useWorkspace } from '@/hooks/useWorkspace';
 import { Building2, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -36,8 +37,19 @@ export default function CreateProjectPage() {
                 return;
             }
 
-            // Redirect to dashboard after successful creation
-            router.push('/dashboard');
+            // Refresh global workspace data so the sidebar updates
+            const { fetchWorkspaceData } = useWorkspace.getState();
+            await fetchWorkspaceData();
+
+            // Redirect to the new project's dashboard
+            const { project } = data;
+            const currentOrg = useWorkspace.getState().activeOrg;
+
+            if (currentOrg) {
+                router.push(`/org/${currentOrg.slug}/proj/${project.id}`);
+            } else {
+                router.push('/dashboard');
+            }
             router.refresh();
         } catch (err) {
             setError('An unexpected error occurred');

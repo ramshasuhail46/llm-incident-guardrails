@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
-import { PrismaClient } from '@prisma/client';
+
 
 
 export const dynamic = 'force-dynamic';

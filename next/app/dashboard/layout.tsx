@@ -1,4 +1,4 @@
-import Sidebar from '@/components/dashboard/Sidebar';
+import Sidebar from '../../components/dashboard/Sidebar';
 import { Suspense } from 'react';
 
 export default function DashboardLayout({

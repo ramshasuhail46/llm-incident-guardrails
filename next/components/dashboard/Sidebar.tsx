@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { UserButton, OrganizationSwitcher } from '@clerk/nextjs';
+import { UserButton } from '@clerk/nextjs';
 import {
     LayoutDashboard,
     AlertCircle,
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import ChangelogModal from './ChangelogModal';
 import HelpSidebar from './HelpSidebar';
+import ProjectSelector from './ProjectSelector';
 import { useWorkspace } from '@/hooks/useWorkspace';
 
 const navItems = [
@@ -84,26 +85,23 @@ export default function Sidebar() {
     return (
         <>
             <aside className="w-72 h-screen border-r border-gray-100 bg-white flex flex-col sticky top-0">
-                {/* Organization Switcher Section */}
-                <div className="p-4 mb-4">
-                    <OrganizationSwitcher
-                        appearance={{
-                            elements: {
-                                rootBox: "w-full",
-                                organizationSwitcherTrigger: "w-full flex items-center justify-between p-2 rounded-xl bg-white border border-gray-100 hover:border-primary/30 hover:bg-gray-50/50 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm",
-                                organizationSwitcherTriggerIcon: "text-gray-400 group-hover:text-primary transition-colors",
-                                organizationPreview: "flex items-center gap-3",
-                                organizationPreviewAvatarBox: "w-10 h-10 rounded-lg",
-                                organizationPreviewTextContainer: "text-left",
-                                organizationPreviewMainIdentifier: "text-sm font-bold text-gray-900",
-                                organizationPreviewSecondaryIdentifier: "text-xs font-semibold text-gray-500 uppercase tracking-wider",
-                            },
-                        }}
-                        hidePersonal={false}
-                        afterCreateOrganizationUrl="/dashboard"
-                        afterSelectOrganizationUrl="/dashboard"
-                        afterSelectPersonalUrl="/dashboard"
-                    />
+                {/* Organization & Project Selectors */}
+                <div className="p-4 space-y-4">
+                    {/* Organization Name (Static - Single Org Model) */}
+                    <div className="px-2 py-2 mb-2">
+                        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gray-50/50 border border-gray-100">
+                            <div className="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-primary shadow-sm font-bold text-sm">
+                                {activeOrg?.name?.charAt(0) || 'O'}
+                            </div>
+                            <div className="flex-1 min-w-0 text-left">
+                                <p className="font-bold text-sm text-gray-900 truncate">
+                                    {activeOrg?.name || 'Organization'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ProjectSelector />
                 </div>
 
                 {/* Main Navigation */}

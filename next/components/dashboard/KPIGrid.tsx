@@ -51,8 +51,8 @@ function InsightCard({ title, value, subtitle, icon, trend, trendType = 'neutral
                     <span className="text-3xl font-bold text-gray-900">{value}</span>
                     {trend && (
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${trendType === 'positive' ? 'bg-green-50 text-green-600' :
-                                trendType === 'negative' ? 'bg-red-50 text-red-600' :
-                                    'bg-gray-50 text-gray-600'
+                            trendType === 'negative' ? 'bg-red-50 text-red-600' :
+                                'bg-gray-50 text-gray-600'
                             }`}>
                             {trend}
                         </span>
@@ -69,7 +69,7 @@ export default function KPIGrid({ stats, loading }: { stats: any, loading: boole
     const getConfidenceColor = (score: number) => {
         if (score > 0.9) return 'green';
         if (score > 0.7) return 'yellow';
-        return 'red';
+        return 'orange';
     };
 
     const confidenceScore = stats?.avgConfidence || 0;

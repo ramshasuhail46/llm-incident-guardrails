@@ -5,13 +5,11 @@ import { useAuth, useOrganization } from '@clerk/nextjs';
 
 interface TenantContextType {
     currentTenantId: string | null;
-    isPersonalWorkspace: boolean;
     isLoading: boolean;
 }
 
 const TenantContext = createContext<TenantContextType>({
     currentTenantId: null,
-    isPersonalWorkspace: true,
     isLoading: true,
 });
 
@@ -80,7 +78,6 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
         <TenantContext.Provider
             value={{
                 currentTenantId,
-                isPersonalWorkspace: !organization,
                 isLoading,
             }}
         >
