@@ -12,7 +12,8 @@ import {
     Shield,
     Users,
     History,
-    HelpCircle
+    HelpCircle,
+    Book
 } from 'lucide-react';
 import ChangelogModal from './ChangelogModal';
 import HelpSidebar from './HelpSidebar';
@@ -28,6 +29,7 @@ const secondaryNavItems = [
     { name: 'Team', href: '/team?tab=members', icon: Users },
     { name: 'History', href: '/history', icon: History },
     { name: 'Settings', href: '/settings?tab=audit', icon: Settings },
+    { name: 'API Docs', href: '/docs', icon: Book },
 ];
 
 export default function Sidebar() {
@@ -72,6 +74,11 @@ export default function Sidebar() {
             return activeProject
                 ? `/org/${activeOrg.slug}/proj/${activeProject.id}/guardrails${search}`
                 : '#'; // Only available for projects
+        }
+
+        // Handle docs
+        if (path === '/docs') {
+            return '/docs';
         }
 
         // Default: append to base
