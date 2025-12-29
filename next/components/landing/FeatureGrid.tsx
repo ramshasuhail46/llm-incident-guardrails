@@ -1,35 +1,35 @@
-import { Slack, Zap, BarChart3, Bell, Shield, Smartphone } from 'lucide-react';
+import { Brain, Shield, Activity, History, Users, Workflow } from 'lucide-react';
 
 const features = [
     {
-        title: 'Slack Integration',
-        description: 'Sync incidents directly with your Slack channels. Collaborate in real-time where your team already works.',
-        icon: <Slack className="w-6 h-6 text-purple-500" />,
+        title: 'AI-Powered Diagnostics',
+        description: 'Leverage advanced AI models to automatically diagnose incidents. Get instant root cause analysis and actionable remediation steps.',
+        icon: <Brain className="w-6 h-6 text-purple-500" />,
     },
     {
-        title: 'Instant Alerts',
-        description: 'Never miss a critical issue. Real-time notifications delivered via SMS, PagerDuty, or email.',
-        icon: <Zap className="w-6 h-6 text-yellow-500" />,
-    },
-    {
-        title: 'Deep Analytics',
-        description: 'Powerful insights into your incident history. Track MTTR, team performance, and reliability trends.',
-        icon: <BarChart3 className="w-6 h-6 text-blue-500" />,
-    },
-    {
-        title: 'Automated Workflows',
-        description: 'Run automated playbooks to remediate common issues faster. Reduce manual toil and human error.',
-        icon: <Bell className="w-6 h-6 text-orange-500" />,
-    },
-    {
-        title: 'Enterprise Security',
-        description: 'Rest easy with SOC2 compliance, role-based access control, and comprehensive audit logs.',
+        title: 'SRE Guardrails',
+        description: 'Configure intelligent safety boundaries for automated remediation. Set confidence thresholds, dry-run modes, and approval workflows.',
         icon: <Shield className="w-6 h-6 text-green-500" />,
     },
     {
-        title: 'Mobile Response',
-        description: 'Manage incidents from anywhere. Our robust mobile app keeps you connected on the move.',
-        icon: <Smartphone className="w-6 h-6 text-indigo-500" />,
+        title: 'Real-Time Monitoring',
+        description: 'Track active incidents with live dashboards. Monitor system health, MTTR trends, and AI confidence scores in one unified view.',
+        icon: <Activity className="w-6 h-6 text-blue-500" />,
+    },
+    {
+        title: 'Comprehensive History',
+        description: 'Access complete incident archives with detailed timelines. Learn from past incidents and improve your response strategies.',
+        icon: <History className="w-6 h-6 text-orange-500" />,
+    },
+    {
+        title: 'Team Collaboration',
+        description: 'Manage organization members, assign roles, and track team activity. Complete audit logs ensure accountability and transparency.',
+        icon: <Users className="w-6 h-6 text-indigo-500" />,
+    },
+    {
+        title: 'Automated Workflows',
+        description: 'Enable AI-driven auto-remediation with configurable guardrails. Scale infrastructure, restart services, and flush caches automatically.',
+        icon: <Workflow className="w-6 h-6 text-pink-500" />,
     },
 ];
 
@@ -39,10 +39,10 @@ export default function FeatureGrid() {
             <div className="container mx-auto px-6 lg:px-8">
                 <div className="text-center max-w-2xl mx-auto mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                        Everything you need for <span className="text-gradient">modern incident response</span>
+                        Everything you need for <span className="text-gradient">AI-powered incident management</span>
                     </h2>
                     <p className="text-lg text-gray-600">
-                        A comprehensive suite of tools designed to help engineering teams resolve incidents faster and learn from every outage.
+                        Intelligent guardrails and automated diagnostics to help your team resolve incidents faster while maintaining safety and control.
                     </p>
                 </div>
 

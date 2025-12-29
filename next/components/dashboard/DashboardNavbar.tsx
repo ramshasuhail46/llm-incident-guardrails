@@ -1,10 +1,18 @@
+"use client";
+
 import { Search, Bell, Settings, Plus } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
 
 export default function DashboardNavbar() {
+    const { user } = useUser();
+
     return (
         <nav className="h-16 border-b border-gray-100 bg-white/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-30">
             <div className="flex items-center gap-4">
-                <h2 className="text-sm font-bold text-gray-900 md:hidden">IncidentFlow</h2>
+                <Link href="/" className="text-sm font-bold text-gray-900 md:hidden hover:text-primary transition-colors">
+                    IncidentFlow
+                </Link>
             </div>
 
             <div className="flex items-center gap-4">
@@ -24,7 +32,18 @@ export default function DashboardNavbar() {
                 </button>
 
                 <div className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 overflow-hidden">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
+                    {user?.imageUrl ? (
+                        <img
+                            src={user.imageUrl}
+                            alt={user.fullName || 'User'}
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <img
+                            src="https://api.dicebear.com/7.x/avataaars/svg?seed=default"
+                            alt="User"
+                        />
+                    )}
                 </div>
 
                 <button className="hidden md:flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-opacity-90 transition-all">

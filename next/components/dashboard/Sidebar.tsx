@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { UserButton, OrganizationSwitcher } from '@clerk/nextjs';
 import {
     LayoutDashboard,
     AlertCircle,
@@ -13,7 +14,6 @@ import {
     History,
     HelpCircle
 } from 'lucide-react';
-import ContextSwitcher from './ContextSwitcher';
 import ChangelogModal from './ChangelogModal';
 import HelpSidebar from './HelpSidebar';
 import { useWorkspace } from '@/hooks/useWorkspace';
@@ -84,13 +84,53 @@ export default function Sidebar() {
     return (
         <>
             <aside className="w-72 h-screen border-r border-gray-100 bg-white flex flex-col sticky top-0">
-                {/* Context Switcher Section */}
+                {/* Organization Switcher Section */}
                 <div className="p-4 mb-4">
-                    <ContextSwitcher />
+                    <OrganizationSwitcher
+                        appearance={{
+                            elements: {
+                                rootBox: "w-full",
+                                organizationSwitcherTrigger: "w-full flex items-center justify-between p-2 rounded-xl bg-white border border-gray-100 hover:border-primary/30 hover:bg-gray-50/50 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm",
+                                organizationSwitcherTriggerIcon: "text-gray-400 group-hover:text-primary transition-colors",
+                                organizationPreview: "flex items-center gap-3",
+                                organizationPreviewAvatarBox: "w-10 h-10 rounded-lg",
+                                organizationPreviewTextContainer: "text-left",
+                                organizationPreviewMainIdentifier: "text-sm font-bold text-gray-900",
+                                organizationPreviewSecondaryIdentifier: "text-xs font-semibold text-gray-500 uppercase tracking-wider",
+                            },
+                        }}
+                        hidePersonal={false}
+                        afterCreateOrganizationUrl="/dashboard"
+                        afterSelectOrganizationUrl="/dashboard"
+                        afterSelectPersonalUrl="/dashboard"
+                    />
                 </div>
 
                 {/* Main Navigation */}
                 <nav className="flex-1 px-4 space-y-1">
+                    {/* Home/Landing Page Link */}
+                    <Link
+                        href="/"
+                        className="flex items-center gap-3 px-3 py-2.5 mb-4 rounded-xl text-sm font-medium transition-all duration-200 text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="text-gray-400"
+                        >
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        Back to Home
+                    </Link>
+
                     <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                         Main Menu
                     </p>
@@ -162,16 +202,21 @@ export default function Sidebar() {
 
                 {/* Footer / User Profile */}
                 <div className="p-4 border-t border-gray-50 space-y-3">
-                    <div className="flex items-center gap-3 p-2 rounded-xl bg-gray-50/50 border border-transparent hover:border-gray-100 transition-all cursor-pointer group">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 overflow-hidden">
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-gray-900 truncate">Felix Miller</p>
-                            <p className="text-xs text-gray-500 truncate">SRE Lead</p>
-                        </div>
-                        <div className="w-2 h-2 rounded-full bg-green-500 border-2 border-white shadow-sm"></div>
-                    </div>
+                    <UserButton
+                        afterSignOutUrl="/"
+                        appearance={{
+                            elements: {
+                                rootBox: "w-full",
+                                card: "w-full",
+                                userButtonBox: "w-full",
+                                userButtonTrigger: "w-full flex items-center gap-3 p-2 rounded-xl bg-gray-50/50 border border-transparent hover:border-gray-100 transition-all group",
+                                userButtonAvatarBox: "w-10 h-10 rounded-full",
+                                userButtonOuterIdentifier: "text-sm font-bold text-gray-900",
+                                userButtonInnerIdentifier: "text-xs text-gray-500",
+                            }
+                        }}
+                        showName={true}
+                    />
 
                     {/* Version & Changelog */}
                     <div className="px-2 py-2 flex items-center justify-between">

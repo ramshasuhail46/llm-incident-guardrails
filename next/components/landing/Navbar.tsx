@@ -1,3 +1,8 @@
+"use client";
+
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
+
 export default function Navbar() {
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-gray-100">
@@ -17,12 +22,36 @@ export default function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <button className="hidden sm:block text-sm font-semibold text-gray-700 hover:text-primary transition-colors">
-                        Log in
-                    </button>
-                    <button className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-opacity-90 transition-all">
-                        Get Started
-                    </button>
+                    <SignedOut>
+                        <Link
+                            href="/sign-in"
+                            className="hidden sm:block text-sm font-semibold text-gray-700 hover:text-primary transition-colors"
+                        >
+                            Log in
+                        </Link>
+                        <Link
+                            href="/sign-up"
+                            className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-opacity-90 transition-all"
+                        >
+                            Get Started
+                        </Link>
+                    </SignedOut>
+                    <SignedIn>
+                        <Link
+                            href="/dashboard"
+                            className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                        >
+                            Dashboard
+                        </Link>
+                        <UserButton
+                            afterSignOutUrl="/"
+                            appearance={{
+                                elements: {
+                                    avatarBox: "w-10 h-10"
+                                }
+                            }}
+                        />
+                    </SignedIn>
                 </div>
             </div>
         </nav>

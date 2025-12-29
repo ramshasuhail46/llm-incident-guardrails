@@ -7,18 +7,21 @@ datasource db {
 }
 
 model Organization {
-  id        String     @id @default(uuid())
-  name      String     @unique
-  slug      String     @unique
-  createdAt DateTime   @default(now())
-  auditLogs AuditLog[]
-  projects  Project[]
-  users     User[]
-  feedback  Feedback[]
+  id         String     @id @default(uuid())
+  clerkId    String?    @unique // Clerk organization ID (null for personal orgs)
+  name       String     @unique
+  slug       String     @unique
+  isPersonal Boolean    @default(false) // True for auto-created personal workspaces
+  createdAt  DateTime   @default(now())
+  auditLogs  AuditLog[]
+  projects   Project[]
+  users      User[]
+  feedback   Feedback[]
 }
 
 model User {
   id             String       @id @default(uuid())
+  clerkId        String?      @unique // Clerk user ID for webhook sync (nullable for existing users)
   email          String       @unique
   role           String       @default("ENGINEER")
   organizationId String
