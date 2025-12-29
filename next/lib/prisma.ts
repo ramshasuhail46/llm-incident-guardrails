@@ -1,17 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 
 const getPrismaClient = () => {
-  const url = process.env.DATABASE_URL;
-
-  // During build, we provide a dummy URL to prevent the constructor from crashing.
-  // The actual connection will only be attempted when a query is run.
-  return new PrismaClient({
-    datasources: {
-      db: {
-        url: url || "postgresql://never:connect@localhost:5432/never"
-      }
-    }
-  });
+  // During build, we don't provide any configuration. 
+  // Prisma 7 will read from prisma.config.ts or DATABASE_URL at runtime.
+  return new PrismaClient();
 };
 
 declare global {
