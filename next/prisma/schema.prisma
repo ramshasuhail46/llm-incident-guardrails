@@ -3,7 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Organization {
@@ -28,7 +30,7 @@ model User {
   createdAt      DateTime     @default(now())
   auditLogs      AuditLog[]
   feedback       Feedback[]
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
 model Project {
@@ -80,7 +82,7 @@ model Incident {
   confidenceScore Float?
   suggestedAction String?
   auditLogs       AuditLog[]
-  project         Project    @relation(fields: [projectId], references: [id])
+  project         Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId])
   @@index([severity, isRead])
@@ -95,10 +97,10 @@ model AuditLog {
   projectId      String?
   incidentId     String?
   createdAt      DateTime     @default(now())
-  incident       Incident?    @relation(fields: [incidentId], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  project        Project?     @relation(fields: [projectId], references: [id])
-  user           User         @relation(fields: [userId], references: [id])
+  incident       Incident?    @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project        Project?     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Feedback {
@@ -111,7 +113,7 @@ model Feedback {
   createdAt      DateTime      @default(now())
   status         String        @default("OPEN")
   
-  user         User?         @relation(fields: [userId], references: [id])
-  organization Organization? @relation(fields: [organizationId], references: [id])
-  project      Project?      @relation(fields: [projectId], references: [id])
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project      Project?      @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }

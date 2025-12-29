@@ -1,21 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
 const getPrismaClient = () => {
-  const url = process.env.DATABASE_URL;
-
-  if (!url) {
-    console.error('DATABASE_URL is missing in environment variables!');
-  }
-
-  // Use the standard datasources property for Prisma 7 compatibility
-  return new PrismaClient({
-    // @ts-ignore
-    datasources: {
-      db: {
-        url: url,
-      },
-    },
-  });
+  return new PrismaClient();
 };
 
 declare global {

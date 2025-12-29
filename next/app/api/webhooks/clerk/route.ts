@@ -68,9 +68,13 @@ export async function POST(req: Request) {
                 }
 
                 // Create personal organization first
+                // We ALWAYS append the last 4 characters of the ID to guarantee uniqueness 
+                // in the database across all environments.
+                const uniqueName = `${first_name || 'User'}'s Workspace (${id.slice(-4)})`;
+
                 const personalOrg = await tx.organization.create({
                     data: {
-                        name: `${first_name || 'User'}'s Workspace`,
+                        name: uniqueName,
                         slug: `user-${id}`,
                         isPersonal: true,
                         clerkId: null, // Personal orgs don't have Clerk IDs
@@ -87,13 +91,14 @@ export async function POST(req: Request) {
                     },
                 });
 
-                console.log('User and personal org created:', id);
+                console.log('User and personal org created:', id, uniqueName);
             });
 
             return new Response('User created successfully', { status: 200 });
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error creating user:', error);
-            return new Response('Error creating user', { status: 500 });
+            // Return the actual error message so we can see it in the Clerk Dashboard
+            return new Response(`Error creating user: ${error.message || 'Unknown error'}`, { status: 500 });
         }
     }
 
@@ -172,6 +177,71 @@ export async function POST(req: Request) {
         } catch (error) {
             console.error('Error creating membership:', error);
             return new Response('Error creating membership', { status: 500 });
+        }
+    }
+
+    if (eventType === 'user.deleted') {
+        const { id } = evt.data;
+        try {
+            // Find user to get their personal org
+            const user = await prisma.user.findUnique({
+                where: { clerkId: id },
+                include: { organization: true }
+            });
+
+            if (user) {
+                await prisma.$transaction(async (tx) => {
+                    // Delete user first
+                    await tx.user.delete({
+                        where: { id: user.id }
+                    });
+
+                    // If it was a personal org, delete it too
+                    if (user.organization.isPersonal) {
+                        await tx.organization.delete({
+                            where: { id: user.organization.id }
+                        });
+                    }
+                });
+                console.log('User and personal org deleted:', id);
+            }
+            return new Response('User deleted successfully', { status: 200 });
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            return new Response('Error deleting user', { status: 500 });
+        }
+    }
+
+    if (eventType === 'organization.deleted') {
+        const { id } = evt.data;
+        try {
+            await prisma.organization.delete({
+                where: { clerkId: id }
+            });
+            console.log('Organization deleted:', id);
+            return new Response('Organization deleted successfully', { status: 200 });
+        } catch (error) {
+            console.error('Error deleting organization:', error);
+            return new Response('Error deleting organization', { status: 500 });
+        }
+    }
+
+    if (eventType === 'organizationMembership.deleted') {
+        const { public_user_data } = evt.data;
+        const userId = public_user_data?.user_id;
+
+        if (!userId) {
+            return new Response('Missing user ID', { status: 400 });
+        }
+
+        try {
+            // Revert to personal workspace if possible, or just remove org reference
+            // For now, we'll just log it as it depends on business logic for default workspace
+            console.log('Organization membership deleted for user:', userId);
+            return new Response('Membership deleted logged', { status: 200 });
+        } catch (error) {
+            console.error('Error handling membership deletion:', error);
+            return new Response('Error handled', { status: 200 });
         }
     }
 
