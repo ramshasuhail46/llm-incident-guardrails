@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Organization {
+  id         String     @id @default(uuid())
+  clerkId    String?    @unique // Clerk organization ID (null for personal orgs)
+  name       String     @unique
+  slug       String     @unique
+  isPersonal Boolean    @default(false) // True for auto-created personal workspaces
+  createdAt  DateTime   @default(now())
+  auditLogs  AuditLog[]
+  projects   Project[]
+  users      User[]
+  feedback   Feedback[]
+}
+
+model User {
+  id             String       @id @default(uuid())
+  clerkId        String?      @unique // Clerk user ID for webhook sync (nullable for existing users)
+  email          String       @unique
+  role           String       @default("ENGINEER")
+  organizationId String
+  createdAt      DateTime     @default(now())
+  auditLogs      AuditLog[]
+  feedback       Feedback[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+}
+
+model Project {
+  id             String       @id @default(uuid())
+  name           String
+  slug           String
+  apiKey         String       @unique @default(cuid())
+  organizationId String
+  createdAt      DateTime     @default(now())
+  auditLogs      AuditLog[]
+  incidents      Incident[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, name])
+  @@unique([organizationId, slug])
+
+  settings ProjectSettings?
+  feedback Feedback[]
+}
+
+model ProjectSettings {
+  id                     String  @id @default(uuid())
+  projectId              String  @unique
+  autoRestartEnabled     Boolean @default(false)
+  scaleUpEnabled         Boolean @default(false)
+  flushCacheEnabled      Boolean @default(false)
+  dryRunMode             Boolean @default(true)
+  minConfidenceScore     Float   @default(0.8)
+  maxActionsPerDay       Int     @default(10)
+  maintenanceWindowStart String?
+  maintenanceWindowEnd   String?
+  requireHumanApproval   Boolean @default(true)
+  notificationChannels   Json?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Incident {
+  id              String     @id @default(uuid())
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  isRead          Boolean    @default(false)
+  severity        String     @default("INFO")
+  status          String     @default("OPEN")
+  projectId       String
+  incidentId      String     @unique
+  rawSignals      Json
+  aiDiagnosis     Json?
+  confidenceScore Float?
+  suggestedAction String?
+  auditLogs       AuditLog[]
+  project         Project    @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+  @@index([severity, isRead])
+}
+
+model AuditLog {
+  id             String       @id @default(uuid())
+  action         String
+  details        String?
+  userId         String
+  organizationId String
+  projectId      String?
+  incidentId     String?
+  createdAt      DateTime     @default(now())
+  incident       Incident?    @relation(fields: [incidentId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  project        Project?     @relation(fields: [projectId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
+}
+
+model Feedback {
+  id             String        @id @default(uuid())
+  category       String
+  message        String
+  userId         String?
+  organizationId String?
+  projectId      String?
+  createdAt      DateTime      @default(now())
+  status         String        @default("OPEN")
+  
+  user         User?         @relation(fields: [userId], references: [id])
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  project      Project?      @relation(fields: [projectId], references: [id])
+}

@@ -1,0 +1,146 @@
+[
+    {
+        "id": "1",
+        "question": "How do I connect my first app?",
+        "answer": "To connect your first app, navigate to Settings > API Keys and generate a new API key. Copy the key and integrate it into your application using our SDK or REST API. Make sure to keep your API key secure and never commit it to version control.",
+        "category": "Getting Started",
+        "tags": [
+            "setup",
+            "api",
+            "integration",
+            "first-time"
+        ]
+    },
+    {
+        "id": "2",
+        "question": "What do AI confidence scores mean?",
+        "answer": "AI confidence scores range from 0 to 1 and indicate how certain the AI is about its diagnosis. Scores above 0.8 are considered high confidence and typically indicate reliable diagnoses. Lower scores may require human review before taking automated actions.",
+        "category": "AI Features",
+        "tags": [
+            "ai",
+            "scores",
+            "diagnosis",
+            "confidence"
+        ]
+    },
+    {
+        "id": "3",
+        "question": "How do I manage API keys?",
+        "answer": "You can manage your API keys in the Settings page under the API Keys tab. Here you can generate new keys, rotate existing ones, and revoke keys that are no longer needed. Each project has its own unique API key for security isolation.",
+        "category": "API Management",
+        "tags": [
+            "api",
+            "keys",
+            "security",
+            "settings"
+        ]
+    },
+    {
+        "id": "4",
+        "question": "What are SRE Guardrails?",
+        "answer": "SRE Guardrails are safety policies that define operational boundaries for AI-driven automated remediation. They include settings like auto-restart services, scale-up infrastructure, minimum confidence scores, and approval workflows to ensure safe automation.",
+        "category": "SRE Features",
+        "tags": [
+            "guardrails",
+            "sre",
+            "automation",
+            "safety"
+        ]
+    },
+    {
+        "id": "5",
+        "question": "How does the incident detection work?",
+        "answer": "Our system monitors your applications for anomalies and incidents. When an incident is detected, it's sent to our AI engine for analysis. The AI diagnoses the issue, assigns a confidence score, and suggests remediation actions based on your configured guardrails.",
+        "category": "Incident Management",
+        "tags": [
+            "incidents",
+            "detection",
+            "monitoring",
+            "ai"
+        ]
+    },
+    {
+        "id": "6",
+        "question": "Can I customize notification channels?",
+        "answer": "Yes! In the SRE Guardrails settings, you can configure notification routing to send alerts to Slack, PagerDuty, email, or other channels. You can also set up different notification rules based on incident severity.",
+        "category": "Notifications",
+        "tags": [
+            "notifications",
+            "alerts",
+            "slack",
+            "pagerduty"
+        ]
+    },
+    {
+        "id": "7",
+        "question": "What is Dry-Run mode?",
+        "answer": "Dry-Run mode allows the AI to analyze incidents and suggest actions without actually executing them. This is useful for testing your guardrails configuration and building confidence in the AI's recommendations before enabling full automation.",
+        "category": "SRE Features",
+        "tags": [
+            "dry-run",
+            "testing",
+            "guardrails",
+            "safety"
+        ]
+    },
+    {
+        "id": "8",
+        "question": "How do I invite team members?",
+        "answer": "Navigate to Settings > Team Members and click 'Invite Member'. Enter their email address and assign a role (Admin, Engineer, or Viewer). They'll receive an invitation email to join your organization.",
+        "category": "Team Management",
+        "tags": [
+            "team",
+            "invite",
+            "members",
+            "collaboration"
+        ]
+    },
+    {
+        "id": "9",
+        "question": "What's the difference between organization and project views?",
+        "answer": "Organization view shows aggregated data across all your projects, while project view focuses on a single project's incidents and settings. Use the context switcher in the sidebar to toggle between views.",
+        "category": "Navigation",
+        "tags": [
+            "organization",
+            "project",
+            "navigation",
+            "context"
+        ]
+    },
+    {
+        "id": "10",
+        "question": "How can I view incident history?",
+        "answer": "Click on 'History' in the sidebar to access the incident archive. You can filter by date range, severity, status, and search for specific incidents. Each incident has a detailed timeline showing the AI diagnosis and any actions taken.",
+        "category": "Incident Management",
+        "tags": [
+            "history",
+            "archive",
+            "incidents",
+            "timeline"
+        ]
+    },
+    {
+        "id": "11",
+        "question": "What are maintenance windows?",
+        "answer": "Maintenance windows are time periods when automated actions are paused. Configure them in SRE Guardrails to prevent the AI from taking actions during scheduled maintenance or off-hours when you want manual oversight.",
+        "category": "SRE Features",
+        "tags": [
+            "maintenance",
+            "windows",
+            "scheduling",
+            "guardrails"
+        ]
+    },
+    {
+        "id": "12",
+        "question": "How do I troubleshoot API integration issues?",
+        "answer": "Check that your API key is correctly configured and hasn't been revoked. Verify your application is sending properly formatted requests to the correct endpoint. Review the API documentation and check the audit log for any error messages.",
+        "category": "Troubleshooting",
+        "tags": [
+            "api",
+            "troubleshooting",
+            "integration",
+            "errors"
+        ]
+    }
+]

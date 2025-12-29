@@ -33,5 +33,5 @@ def run_evaluation():
         except Exception as e:
             print(f"Error testing {file_path}: {e}")
 
-if __name__ == "__main__":
-    run_evaluation()
+# if __name__ == "__main__":
+#     run_evaluation()
