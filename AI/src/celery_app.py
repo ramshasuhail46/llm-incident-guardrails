@@ -23,6 +23,7 @@ celery_app = Celery(
 
 # Configure Celery settings
 celery_app.conf.update(
+    task_default_queue='sre_incidents',
     task_serializer='json',
     accept_content=['json'],
     result_serializer='json',
