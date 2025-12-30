@@ -6,7 +6,15 @@ import redis from '@/shared/redis';
 // Define types for validation
 interface ReportRequest {
     incident_id: string;
-    signals: Record<string, any>;
+    signals: {
+        metrics?: Record<string, any>;
+        logs?: string[];
+        deployments?: any[];
+        infrastructure?: Record<string, any>;
+        configuration?: Record<string, any>;
+        dependencies?: Record<string, any>;
+        [key: string]: any;
+    };
 }
 
 export async function OPTIONS() {

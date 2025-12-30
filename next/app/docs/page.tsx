@@ -52,6 +52,11 @@ export default function DocumentationPage() {
                             <h5 className="mb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Architecture</h5>
                             <ul className="space-y-2 text-sm font-medium">
                                 <li>
+                                    <Link href="#external-integration" className="block text-gray-700 hover:text-primary transition-colors">
+                                        External Integration
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link href="#ai-reliability" className="block text-gray-700 hover:text-primary transition-colors">
                                         AI Reliability
                                     </Link>
@@ -210,7 +215,15 @@ export default function DocumentationPage() {
                                             <tr>
                                                 <td className="px-6 py-4 font-mono text-purple-600">rawSignals</td>
                                                 <td className="px-6 py-4 text-gray-500">Object</td>
-                                                <td className="px-6 py-4 text-gray-600">Flexible JSON object containing logs, metrics, or error details for AI analysis.</td>
+                                                <td className="px-6 py-4 text-gray-600">
+                                                    Comprehensive signal data including:
+                                                    <code className="bg-gray-100 px-1 py-0.5 rounded text-xs ml-1">metrics</code>,
+                                                    <code className="bg-gray-100 px-1 py-0.5 rounded text-xs ml-1">logs</code>,
+                                                    <code className="bg-gray-100 px-1 py-0.5 rounded text-xs ml-1">deployments</code>,
+                                                    <code className="bg-gray-100 px-1 py-0.5 rounded text-xs ml-1">infrastructure</code>,
+                                                    <code className="bg-gray-100 px-1 py-0.5 rounded text-xs ml-1">configuration</code>,
+                                                    <code className="bg-gray-100 px-1 py-0.5 rounded text-xs ml-1">dependencies</code>.
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td className="px-6 py-4 font-mono text-purple-600">source</td>
@@ -246,6 +259,111 @@ export default function DocumentationPage() {
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <hr className="my-12 border-gray-200" />
+
+
+
+                    {/* External Integration Section */}
+                    <section id="external-integration" className="scroll-mt-24 mb-16">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-2 bg-green-100 rounded-lg text-green-600">
+                                <Terminal className="w-6 h-6" />
+                            </div>
+                            <h2 className="text-3xl font-bold text-gray-900">External Integration</h2>
+                        </div>
+                        <p className="text-lg text-gray-600 mb-8">
+                            Don't leave your logs buried in the terminal. Use a collector pattern to send critical errors to IncidentFlow automatically.
+                        </p>
+
+                        <div className="space-y-8">
+                            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                                <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                        <Code className="w-5 h-5 text-gray-500" />
+                                        Log Collector Implementation
+                                    </h3>
+                                    <div className="flex gap-2 text-xs font-bold text-gray-400">
+                                        <span className="px-2 py-1 bg-gray-100 rounded">Python</span>
+                                        <span className="px-2 py-1 bg-gray-100 rounded">Node.js</span>
+                                        <span className="px-2 py-1 bg-gray-100 rounded">cURL</span>
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <p className="text-gray-600 mb-6">
+                                        Integrate these snippets into your application's error handler or logging middleware to automatically forward critical events to IncidentFlow.
+                                    </p>
+
+                                    <div className="space-y-6">
+                                        <div>
+                                            <h4 className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Python (Requests)</h4>
+                                            <div className="bg-gray-900 rounded-lg p-6 font-mono text-sm text-gray-300 overflow-x-auto">
+                                                <pre className="leading-relaxed">
+                                                    <span className="text-purple-400">import</span> requests<br />
+                                                    <br />
+                                                    <span className="text-purple-400">def</span> <span className="text-blue-400">report_to_ai</span>(incident_id, logs, status_data):<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;payload = &#123;<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-400">"incident_id"</span>: incident_id,<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-400">"signals"</span>: &#123;<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-400">"logs"</span>: logs,<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-400">"infrastructure"</span>: &#123; <span className="text-green-400">"k8s_events"</span>: [<span className="text-green-400">"OOMKilled"</span>] &#125;,<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-400">"dependencies"</span>: &#123; <span className="text-green-400">"stripe"</span>: <span className="text-green-400">"degraded"</span> &#125;<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#125;<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&#125;<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;requests.post(<span className="text-green-400">"https://api.incidentflow.com/api/v1/report"</span>, json=payload)<br />
+                                                </pre>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <h4 className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Node.js (Axios)</h4>
+                                            <div className="bg-gray-900 rounded-lg p-6 font-mono text-sm text-gray-300 overflow-x-auto">
+                                                <pre className="leading-relaxed">
+                                                    <span className="text-purple-400">const</span> axios = <span className="text-purple-400">require</span>(<span className="text-green-400">'axios'</span>);<br />
+                                                    <br />
+                                                    <span className="text-purple-400">async function</span> <span className="text-blue-400">reportToAI</span>(incidentId, logs, metrics) &#123;<br />
+                                                    &nbsp;&nbsp;<span className="text-purple-400">await</span> axios.post(<span className="text-green-400">'https://api.incidentflow.com/api/v1/report'</span>, &#123;<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;incident_id: incidentId,<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;signals: &#123; <br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;metrics, logs, <br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;configuration: &#123; feature_flags: &#123; new_checkout: <span className="text-green-400">'ENABLED'</span> &#125; &#125;<br />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&#125;<br />
+                                                    &nbsp;&nbsp;&#125;);<br />
+                                                    &#125;
+                                                </pre>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <h4 className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">cURL / Shell</h4>
+                                            <div className="bg-gray-900 rounded-lg p-6 font-mono text-sm text-gray-300 overflow-x-auto">
+                                                <pre className="leading-relaxed">
+                                                    curl -X POST https://api.incidentflow.com/api/v1/report \<br />
+                                                    &nbsp;&nbsp;-H <span className="text-green-400">"Content-Type: application/json"</span> \<br />
+                                                    &nbsp;&nbsp;-d '<span className="text-purple-400">&#123; "incident_id": "ABC-123", "signals": &#123; "infrastructure": &#123; "status": "Degraded" &#125; &#125; &#125;</span>'
+                                                </pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="bg-white p-6 rounded-xl border border-gray-200">
+                                    <h4 className="font-bold text-gray-900 mb-2">Automated Webhooks</h4>
+                                    <p className="text-sm text-gray-600">
+                                        Connect tools like <strong>Sentry</strong> or <strong>Datadog</strong> directly using our Webhook Ingestion URL without writing any code.
+                                    </p>
+                                </div>
+                                <div className="bg-white p-6 rounded-xl border border-gray-200">
+                                    <h4 className="font-bold text-gray-900 mb-2">Polling Results</h4>
+                                    <p className="text-sm text-gray-600">
+                                        Use the returned <code className="px-1 py-0.5 bg-gray-100 rounded">task_id</code> to poll for AI diagnosis results as they complete in the background.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -367,6 +485,12 @@ export default function DocumentationPage() {
                     <li>
                         <Link href="#architecture" className="block text-gray-600 hover:text-primary transition-colors">
                             Architecture
+                        </Link>
+                    </li>
+
+                    <li>
+                        <Link href="#external-integration" className="block text-gray-500 hover:text-primary transition-colors pl-2">
+                            External Integration
                         </Link>
                     </li>
                     <li>
